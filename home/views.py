@@ -7,3 +7,8 @@ def index(request):
 
     # Page from the theme 
     return render(request, 'index.html')
+
+def login(request):
+    template_name = 'my_login.html'
+
+    return render(request, template_name)

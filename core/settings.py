@@ -67,7 +67,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "core.urls"
+ROOT_URLCONF = "home.urls"
 
 UI_TEMPLATES = os.path.join(BASE_DIR, 'home/templates')
 

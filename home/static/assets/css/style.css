@@ -460,15 +460,15 @@ h6 {
 --------------------------------------------------------------*/
 #hero {
   width: 100%;
-  height: 75vh;
-  background: url("../img/background.jpg") top left;
+  height: 85vh;
+  background: url("../img/back4.png") top left;
   background-size: cover;
   position: relative;
 }
 
 #hero:before {
   content: "";
-  background: rgba(78, 76, 76, 0.6);
+  background: rgba(174, 168, 168, 0.6);
   position: absolute;
   bottom: 0;
   top: 0;
@@ -478,74 +478,103 @@ h6 {
 
 #hero .container {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hero h1 span::before {
+  content: ''; /* Required for the pseudo-element to be displayed */
+  position: absolute; /* Absolute positioning to position the pseudo-element */
+  top: 47%; /* Position it in the middle vertically */
+  left: -50%; /* Position it on the left edge */
+  width: 175%; /* Make it span the entire width */
+  height: 37%; /* Make it span the entire height */
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.65), transparent);
+  z-index: -1; /* Send it behind the text */
+  border-radius: 15px;
 }
 
 #hero h1 {
-  margin: -50px 0px 0px 370px;
   position: absolute;
-  font-size: 40px;
+  left: 41%;
+  margin-top: -200px;
+  font-size: 35px;
   font-weight: 700;
   line-height: 50px;
-  color: #ffffff;
+  color: #000000;
   font-family: "Poppins", sans-serif;
 }
 
+@keyframes pulsate {
+  0% {
+    transform: scale(1);
+    filter: brightness(100%);
+  }
+  100% {
+    transform: scale(1.05);
+    filter: brightness(120%);
+  }
+}
+
 #hero h1 span {
-  color: #0099fe;
+  color: #0078D6;
+  margin-left: -70px;
 }
 
 #hero h2 {
+  position: absolute;
+  margin-top: 9%;
   color: #dcdcdc;
-  margin: 70px 20px 0px 370px;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
+  animation: pulsate 2s infinite alternate;
 }
 
 #hero .btn-get-started {
   font-family: "Roboto", sans-serif;
-  margin-left: 400px;
-  margin-top: 20px;
+  margin-top: 6%;
+  margin-left: -6%;
+  position: absolute;
   text-transform: uppercase;
   font-weight: 500;
   font-size: 14px;
   letter-spacing: 1px;
   display: inline-block;
-  padding: 10px 28px;
+  padding: 10px 20px;
   border-radius: 4px;
   transition: 0.5s;
   color: #fff;
-  background: #106eea;
+  background: #0078D6;
 }
 
 #hero .btn-get-started:hover {
-  background: #247cf0;
+  background: #0078D6;
 }
 
-#hero .btn-watch-video {
-  font-size: 16px;
-  transition: 0.5s;
-  margin-left: 25px;
-  color: #222222;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
+
+
+.image-wrapper {
+  width: 500px; /* Set the width of the image wrapper */
+  height: 500px; /* Set the height of the image wrapper */
+  overflow: hidden; /* Hide any content that overflows the image wrapper */
+  border-radius: 10px; /* Add rounded corners to the image wrapper */
+  margin-top: 10%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow effect */
+  margin-left: 70%;
 }
 
-#hero .btn-watch-video i {
-  color: #106eea;
-  font-size: 32px;
-  transition: 0.3s;
-  line-height: 0;
-  margin-right: 8px;
+.image-wrapper img {
+  display: block; /* Make the image a block element */
+  width: 100%; /* Set the width of the image to fill its container */
+  height: auto; /* Automatically adjust the height to maintain aspect ratio */
+  transition: transform 0.3s ease; /* Add a smooth transition effect */
 }
 
-#hero .btn-watch-video:hover {
-  color: #106eea;
+.image-wrapper:hover img {
+  transform: scale(1.1); /* Scale up the image on hover for a modern effect */
 }
 
-#hero .btn-watch-video:hover i {
-  color: #3b8af2;
-}
 
 @media (min-width: 1024px) {
   #hero {
