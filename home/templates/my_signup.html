@@ -33,7 +33,7 @@
         .container {
             position: relative;
             width: 500px;
-            height: 530px;
+            height: 700px;
             background: #fff;
             box-shadow: 0 15px 50px rgba(0,0,0,.1);
             overflow: hidden;
@@ -81,26 +81,28 @@
 <body>
 
 <div class="container">
+    <form method="post" action="{% url 'signup_view' %}">
+      {% csrf_token %}
+      <h2>Sign Up Form</h2>
+  
+      <label for="fname"><b>First Name</b></label>
+      <input type="text" placeholder="Enter First Name" name="fname" required>
+  
+      <label for="lname"><b>Last Name</b></label>
+      <input type="text" placeholder="Enter Last Name" name="lname" required>
 
-<form method="POST" action="{% url 'login_view' %}">
-  {% csrf_token %}
-  <h2>Login Form</h2>
-  <label for="uname"><b>Username</b></label>
-  <input type="text" placeholder="Enter Username" name="uname" required>
-  <br>
-  <br>
-  <label for="psw"><b>Password</b></label>
-  <input type="password" placeholder="Enter Password" name="psw" required>
-
-  <p style="text-align: center;"><a href="#" style="font-size: 0.8em; text-align: center;">Forgot Password</a></p>
-  <br>
-  <p style="font-size: 0.8em; text-align: center;">Don't have an account? <a href="{% url 'signup_view' %}">Sign Up</a></p>
-  <br>
-  <br>
-  <br>
-  <input type="submit" class="btn" value="Login">
-</form>
-</div>
-
-</body>
-</html>
+  
+      <label for="email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Email" name="email" required>
+  
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname" required>
+  
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required>
+      <br>
+      <br>
+  
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+  </div>
