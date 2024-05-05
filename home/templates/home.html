@@ -1,10 +1,8 @@
 <form method="post">
     {% csrf_token %}
     <label for="purpose">Purpose of the docker container's app:</label>
-    <input type="text" id="purpose" name="purpose">
   
     {% if images %}
-      <label for="selected_image">Select an image:</label>
       <select id="selected_image" name="selected_image">
         {% for image in images %}
           <option value="{{ image }}">
@@ -14,29 +12,38 @@
         {% endfor %}
         </select>
         <button type="button" id="show_more_images">Show more</button>
+    {% else %}
+    <input type="text" id="purpose" name="purpose">  
     {% endif %}
-
-<input type="text" id="custom_image" name="custom_image">
 
 <input type="submit" value="Submit">
 </form>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<a href="{% url 'file_history' %}">History</a>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
-  $("#show_more_images").click(function(){
-    var query = $("#purpose").val();  // Get the value of the 'purpose' input field
+  $("#purpose").on('input', function(){
+    var query = $(this).val();  // Get the value of the 'purpose' input field
     $.ajax({
       url: '/api/images/',  // Replace with the URL of your API that returns all images
       type: 'get',
       data: {'query': query},  // Include the query parameter in the request
       success: function(data) {
         var select = $("#selected_image");
-        $.each(data.images, function(index, value) {
-          select.append('<option value="' + value + '">' + value + '</option>');  // Append new options
+        select.empty();  // Remove all options
+        // Add new options
+        $.each(data, function(index, image) {
+          select.append($('<option>', { 
+            value: image,
+            text : image 
+          }));
         });
+        // Change the button text to 'Submit'
+        $('input[type="submit"]').val('Submit');
       }
     });
   });
 });
-</script>
+</script> -->

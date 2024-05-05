@@ -1,0 +1,30 @@
+sudo apt-get install mysql-server
+sudo service mysql start
+
+Pentru schimbare parola root(nu mai merge):
+sudo mysql -u root
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password';
+FLUSH PRIVILEGES;
+exit;
+Conectare iar: mysql -u root -p
+
+Install mariadb(online) and:
+sudo apt-get install libmysqlclient-dev pkg-config
+pip install mysqlclient
+
+
+
+Pentru a face baza de date: mysql -u root -p -> conectare la mysqlplus in venv
+Apoi:
+CREATE DATABASE dockerfile_generator_database;
+CREATE USER 'adelina'@'localhost' IDENTIFIED BY 'student';
+GRANT ALL PRIVILEGES ON dockerfile_generator_database.* TO 'adelina'@'localhost';
+FLUSH PRIVILEGES;
+
+In terminal to set the env variables:
+export DB_ENGINE=django.db.backends.mysql
+export DB_NAME=dockerfile_generator_database
+export DB_USERNAME=adelina
+export DB_PASS=student
+export DB_HOST=localhost
+export DB_PORT=3306

@@ -1,0 +1,5 @@
+template
+Username: {username}
+
+Image Texts:
+{image_texts}

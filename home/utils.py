@@ -2,11 +2,11 @@ import requests
 import json
 
 def search_docker_images(query):
-    response = requests.get(f'https://hub.docker.com/v2/search/repositories/?query={query}')
+    response = requests.get(f'https://hub.docker.com/v2/search/repositories/?query={query}&page_size=10')
     data = response.json()
 
     # Extract the names of the first 5 images
-    image_names = [result['repo_name'] for result in data['results'][:15]]
+    image_names = [result['repo_name'] for result in data['results'][:5]]
 
     images = []
     for image_name in image_names:

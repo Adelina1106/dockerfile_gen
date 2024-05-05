@@ -1,0 +1,9 @@
+{% block content %}
+  <h2>Create File</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="file_content">File Content:</label><br>
+    <textarea id="file_content" name="file_content" rows="4" cols="50"></textarea><br>
+    <input type="submit" value="Create">
+  </form>
+{% endblock %}

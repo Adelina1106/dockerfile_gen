@@ -7,6 +7,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from .utils import generate_dockerfile, search_docker_images
+from django.contrib.auth.decorators import login_required
+from .models import UserFileHistory
+from .models import ImageText
+import os
+from django.conf import settings
 # Create your views here.
 
 def landing(request):
@@ -22,7 +27,6 @@ def login_view(request):
         password = request.POST.get('psw')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-        
             HttpResponse('Login successful.')
             login(request, user)
             return redirect('home')
@@ -41,14 +45,16 @@ def signup_view(request):
         email = request.POST['email']
         username = request.POST['uname']
         password = request.POST['psw']
-        user = User.objects.create_user(username, password, email, first_name=first_name, last_name=last_name)
+        #user = User.objects.create_user(username, password, email, first_name=first_name, last_name=last_name)
+        user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
         user.save()
         login(request, user)
         return HttpResponse('Account created successfully.')
     else:
         # Render the sign-up form
         return render(request, 'my_signup.html')
-    
+
+@login_required
 def home(request):
     if request.method == 'POST':
         purpose = request.POST.get('purpose')
@@ -57,6 +63,18 @@ def home(request):
         if selected_image:
             dockerfile_content = generate_dockerfile(selected_image)
             # Do something with dockerfile_content...
+
+            # Open the template file and read its contents
+            template_path = os.path.join(settings.BASE_DIR, 'home/', 'dockerfile_template.txt')
+            with open(template_path, 'r') as f:
+                template = f.read()
+                
+
+            # Format the template string with the user's data
+            formatted_template = template.format(username=request.user.username, image_texts=selected_image)
+
+            # Create a new ImageText and save it to the database
+            ImageText.objects.create(user=request.user, text=formatted_template)
         else:
             images = search_docker_images(purpose)
             return render(request, 'home.html', {'images': images})
@@ -68,6 +86,35 @@ def get_all_images(request):
     images = search_docker_images(query)
     return JsonResponse({'images': images})
 
+@login_required
+def create_file(request):
+    if request.method == 'POST':
+        text = request.POST.get('selected_image')
+        ImageText.objects.create(user=request.user, text=text)
+        file_content = request.POST.get('file_content')
+        if file_content:  # Simple validation to check if content is not empty
+            UserFileHistory.objects.create(user=request.user, file=file_content)
+            return redirect('file_history')
+    return render(request, 'create_file.html')
+
+@login_required
+def file_history(request):
+    # Get the user's data
+    image_texts = ImageText.objects.filter(user=request.user)
+    image_texts_str = '\n'.join(image_text.text for image_text in image_texts)
+
+    # Open the template file and read its contents
+    with open('home/dockerfile_template.txt', 'r') as f:
+        template = f.read()
+
+    # Format the template string with the user's data
+    formatted_template = template.format(username=request.user.username, image_texts=image_texts_str)
+
+    # Write the formatted template string to a file
+    with open('user_data.txt', 'w') as f:
+        f.write(formatted_template)
+
+    return render(request, 'file_history.html', {'image_texts': image_texts})
 
     
     

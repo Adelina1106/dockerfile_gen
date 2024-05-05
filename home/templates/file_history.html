@@ -1,0 +1,9 @@
+{% if image_texts %}
+  <ul>
+    {% for image_text in image_texts %}
+      <li>{{ image_text.text }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No files found</p>
+{% endif %}

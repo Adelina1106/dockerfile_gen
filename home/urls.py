@@ -12,4 +12,6 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('api/images/', views.get_all_images, name='get_all_images'),
+    path('file_history/', views.file_history, name='file_history'),
+    path('create/', views.create_file, name='create_image'),
 ]

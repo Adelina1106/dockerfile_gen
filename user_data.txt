@@ -1,0 +1,39 @@
+template
+Username: victor3
+
+Image Texts:
+node:20.12.2-buster
+ubuntu:latest
+centos:latest
+node:latest
+template = """
+Username: victor3
+
+Image Texts:
+golang:latest
+"""
+template
+Username: victor3
+
+Image Texts:
+google/apparmor-loader:latest
+template
+Username: victor3
+
+Image Texts:
+cimg/python:3.12.3-node
+template
+Username: victor3
+
+Image Texts:
+eclipse/cpp_gcc:latest
+template
+Username: victor3
+
+Image Texts:
+ubuntu-debootstrap:latest
+template
+Username: victor3
+
+Image Texts:
+gcc:9.5.0-bullseye

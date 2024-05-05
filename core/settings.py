@@ -29,7 +29,7 @@ if not SECRET_KEY:
     SECRET_KEY = ''.join(random.choice( string.ascii_lowercase  ) for i in range( 32 ))
 
 # Enable/Disable DEBUG Mode
-DEBUG = str2bool(os.environ.get('DEBUG'))
+DEBUG = True
 #print(' DEBUG -> ' + str(DEBUG) ) 
 
 # Docker HOST
@@ -52,8 +52,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    'crispy_forms',
     "home",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -67,7 +68,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "home.urls"
+ROOT_URLCONF = "core.urls"
 
 UI_TEMPLATES = os.path.join(BASE_DIR, 'home/templates')
 
@@ -103,12 +104,12 @@ DB_NAME     = os.getenv('DB_NAME'     , None)
 if DB_ENGINE and DB_NAME and DB_USERNAME:
     DATABASES = { 
       'default': {
-        'ENGINE'  : 'django.db.backends.' + DB_ENGINE, 
-        'NAME'    : DB_NAME,
-        'USER'    : DB_USERNAME,
-        'PASSWORD': DB_PASS,
-        'HOST'    : DB_HOST,
-        'PORT'    : DB_PORT,
+        'ENGINE'  : 'django.db.backends.mysql', 
+        'NAME'    : 'dockerfile_generator_database',
+        'USER'    : 'adelina',
+        'PASSWORD': 'student',
+        'HOST'    : 'localhost',
+        'PORT'    : 3306,
         }, 
     }
 else:
@@ -168,5 +169,10 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+print("DB_USERNAME:", DB_USERNAME)
+print("DB_PASS:", DB_PASS)
+print("DB_HOST:", DB_HOST)
+print("DB_PORT:", DB_PORT)
+print("DB_NAME:", DB_NAME)
