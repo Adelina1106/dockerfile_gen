@@ -1,7 +1,26 @@
-template
-Username: {username}
+"""# Dockerfile Template
+FROM {image_text}
 
-Image Texts:
-{image_texts}
+# Image Texts
+LABEL image_texts={label}
 
-COPY: {copy_file}
+# Copy command
+COPY {copy}
+
+# Docker commands
+ADD {add}
+ARG {arg}
+CMD {cmd}
+ENTRYPOINT {entrypoint}
+ENV {env}
+EXPOSE {expose}
+HEALTHCHECK {healthcheck}
+MAINTAINER {maintainer}
+ONBUILD {onbuild}
+RUN {run}
+SHELL {shell}
+STOPSIGNAL {stopsignal}
+USER {user}
+VOLUME {volume}
+WORKDIR {workdir}
+"""

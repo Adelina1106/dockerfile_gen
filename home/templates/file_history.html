@@ -1,7 +1,7 @@
 {% if image_texts %}
   <ul>
     {% for image_text in image_texts %}
-      <li>{{ image_text.text }}</li>
+      <li>{{ image_text.text|linebreaks }}</li>
     {% endfor %}
   </ul>
 {% else %}

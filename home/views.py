@@ -60,6 +60,24 @@ def home(request):
         purpose = request.POST.get('purpose')
         selected_image = request.POST.get('selected_image')
         copy_path = request.POST.get('copy')
+        label = request.POST.get('label')
+        add_file = request.POST.get('add')
+        arg = request.POST.get('arg')
+        cmd = request.POST.get('cmd')
+        entrypoint = request.POST.get('entrypoint')
+        env = request.POST.get('env')
+        expose = request.POST.get('expose')
+        healthcheck = request.POST.get('healthcheck')
+        maintainer = request.POST.get('maintainer')
+        onbuild = request.POST.get('onbuild')
+        run = request.POST.get('run')
+        shell = request.POST.get('shell')
+        stopsignal = request.POST.get('stopsignal')
+        user = request.POST.get('user')
+        volume = request.POST.get('volume')
+        workdir = request.POST.get('workdir')
+
+
         # in aceeasi metoda este si situatia in care se apasa oe search(selected_image nu e selectat) si cand se apasa pe submit
         if selected_image:
             dockerfile_content = generate_dockerfile(selected_image)
@@ -72,7 +90,29 @@ def home(request):
                 
 
             # Format the template string with the user's data
-            formatted_template = template.format(username=request.user.username, image_texts=selected_image, copy_file=copy_path)
+            formatted_template = template.format(
+    username=request.user.username,
+    image_texts=selected_image,
+    copy=copy_path,
+    add=add_file,
+    arg=arg,
+    cmd=cmd,
+    entrypoint=entrypoint,
+    env=env,
+    expose=expose,
+    healthcheck=healthcheck,
+    maintainer=maintainer,
+    onbuild=onbuild,
+    run=run,
+    shell=shell,
+    stopsignal=stopsignal,
+    user=user,
+    volume=volume,
+    workdir=workdir,
+    label=label
+)
+            
+            formatted_template = formatted_template.replace('\n', '<br>')
 
             # Create a new ImageText and save it to the database
             ImageText.objects.create(user=request.user, text=formatted_template)
