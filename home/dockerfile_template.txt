@@ -3,3 +3,5 @@ Username: {username}
 
 Image Texts:
 {image_texts}
+
+COPY: {copy_file}

@@ -59,7 +59,8 @@ def home(request):
     if request.method == 'POST':
         purpose = request.POST.get('purpose')
         selected_image = request.POST.get('selected_image')
-
+        copy_path = request.POST.get('copy')
+        # in aceeasi metoda este si situatia in care se apasa oe search(selected_image nu e selectat) si cand se apasa pe submit
         if selected_image:
             dockerfile_content = generate_dockerfile(selected_image)
             # Do something with dockerfile_content...
@@ -71,7 +72,7 @@ def home(request):
                 
 
             # Format the template string with the user's data
-            formatted_template = template.format(username=request.user.username, image_texts=selected_image)
+            formatted_template = template.format(username=request.user.username, image_texts=selected_image, copy_file=copy_path)
 
             # Create a new ImageText and save it to the database
             ImageText.objects.create(user=request.user, text=formatted_template)
@@ -104,15 +105,15 @@ def file_history(request):
     image_texts_str = '\n'.join(image_text.text for image_text in image_texts)
 
     # Open the template file and read its contents
-    with open('home/dockerfile_template.txt', 'r') as f:
-        template = f.read()
+    # with open('home/dockerfile_template.txt', 'r') as f:
+    #     template = f.read()
 
-    # Format the template string with the user's data
-    formatted_template = template.format(username=request.user.username, image_texts=image_texts_str)
+    # # Format the template string with the user's data
+    # formatted_template = template.format(username=request.user.username, image_texts=image_texts_str)
 
-    # Write the formatted template string to a file
-    with open('user_data.txt', 'w') as f:
-        f.write(formatted_template)
+    # # Write the formatted template string to a file
+    # with open('user_data.txt', 'w') as f:
+    #     f.write(formatted_template)
 
     return render(request, 'file_history.html', {'image_texts': image_texts})
 
