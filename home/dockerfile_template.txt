@@ -1,4 +1,4 @@
-"""# Dockerfile Template
+# Dockerfile Template
 FROM {image_text}
 
 # Image Texts
@@ -23,4 +23,3 @@ STOPSIGNAL {stopsignal}
 USER {user}
 VOLUME {volume}
 WORKDIR {workdir}
-"""

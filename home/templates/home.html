@@ -70,7 +70,7 @@
           <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
           <li><a class="nav-link scrollto" href="#about">About</a></li>
           <li><a class="nav-link scrollto" href="#services">Services</a></li>
-          <li><a class="nav-link scrollto " href="{% url 'file_history' %}">History</a></li>
+          <li><a class="nav-link scrollto " href="{% url 'history' %}">History</a></li>
           <li><a class="nav-link scrollto" href="#team">Team</a></li>
           <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
@@ -102,7 +102,7 @@
       <!-- FROM -->
         <label for="purpose">Purpose of the docker container's app:</label>
         {% if not images %}
-        <input type="text" id="purpose" name="purpose">
+        <input type="text" id="purpose" name="purpose" required>
         <input type="submit" value="Search">
         {%else%}
         <select id="selected_image" name="selected_image">
@@ -190,7 +190,7 @@
 </form>
     <br>
     <br>
-    <a href="{% url 'file_history' %}">History</a>
+    <a href="{% url 'history' %}">History</a>
 </body>
 </html>
 
@@ -211,6 +211,34 @@ $(document).ready(function(){
           select.append($('<option>', { 
             value: image,
             text : image 
+          }));
+        });
+        // Change the button text to 'Submit'
+        $('input[type="submit"]').val('Submit');
+      }
+    });
+  });
+});
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $('#purpose').on('input', function() {
+    var image_name = $(this).val();
+    $.ajax({
+      url: '/search/',  // replace with the URL of your search view
+      data: {
+        'image_name': image_name
+      },
+      success: function(data) {
+        // Clear the existing options
+        $('#image').empty();
+        // Add each image from the search results as an option
+        $.each(data, function(index, image) {
+          $('#image').append($('<option>', {
+            value: image,
+            text : image
           }));
         });
         // Change the button text to 'Submit'

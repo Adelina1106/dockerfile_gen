@@ -1,9 +1,19 @@
-{% if image_texts %}
+{% if dockerfiles %}
   <ul>
-    {% for image_text in image_texts %}
-      <li>{{ image_text.text|linebreaks }}</li>
+    {% for dockerfile in dockerfiles %}
+    <li><pre>{{ dockerfile.text }}</pre>
+      <form action="{% url 'delete_template' dockerfile.id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Delete">
+      </form></li>
     {% endfor %}
   </ul>
 {% else %}
   <p>No files found</p>
 {% endif %}
+
+<script>
+  window.onload = function() {
+      history.replaceState({}, '', '/home/');
+  }
+  </script>

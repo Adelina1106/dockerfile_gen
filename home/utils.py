@@ -1,5 +1,7 @@
 import requests
 import json
+from django.views.decorators.cache import cache_control
+
 
 def search_docker_images(query):
     response = requests.get(f'https://hub.docker.com/v2/search/repositories/?query={query}&page_size=10')
@@ -42,3 +44,9 @@ def generate_dockerfile(purpose):
     # Add more Dockerfile instructions here based on your requirements
 
     return dockerfile_content
+
+def no_cache(view_func):
+    @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+    def _wrapped_view_func(*args, **kwargs):
+        return view_func(*args, **kwargs)
+    return _wrapped_view_func

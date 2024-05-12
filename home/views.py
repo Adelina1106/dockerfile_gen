@@ -12,6 +12,8 @@ from .models import UserFileHistory
 from .models import ImageText
 import os
 from django.conf import settings
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_GET
 # Create your views here.
 
 def landing(request):
@@ -88,11 +90,11 @@ def home(request):
             with open(template_path, 'r') as f:
                 template = f.read()
                 
-
+            images = search_docker_images(purpose)
             # Format the template string with the user's data
             formatted_template = template.format(
     username=request.user.username,
-    image_texts=selected_image,
+    image_text=selected_image,
     copy=copy_path,
     add=add_file,
     arg=arg,
@@ -112,7 +114,7 @@ def home(request):
     label=label
 )
             
-            formatted_template = formatted_template.replace('\n', '<br>')
+            # formatted_template = formatted_template.replace('\n', '<br>')
 
             # Create a new ImageText and save it to the database
             ImageText.objects.create(user=request.user, text=formatted_template)
@@ -135,14 +137,15 @@ def create_file(request):
         file_content = request.POST.get('file_content')
         if file_content:  # Simple validation to check if content is not empty
             UserFileHistory.objects.create(user=request.user, file=file_content)
-            return redirect('file_history')
+            return redirect('history')
     return render(request, 'create_file.html')
 
 @login_required
+@never_cache
 def file_history(request):
     # Get the user's data
-    image_texts = ImageText.objects.filter(user=request.user)
-    image_texts_str = '\n'.join(image_text.text for image_text in image_texts)
+    dockerfiles = ImageText.objects.filter(user=request.user)
+    image_texts_str = '\n'.join(image_text.text for image_text in dockerfiles)
 
     # Open the template file and read its contents
     # with open('home/dockerfile_template.txt', 'r') as f:
@@ -155,7 +158,17 @@ def file_history(request):
     # with open('user_data.txt', 'w') as f:
     #     f.write(formatted_template)
 
-    return render(request, 'file_history.html', {'image_texts': image_texts})
+    return render(request, 'file_history.html', {'dockerfiles': dockerfiles})
 
+@never_cache
+def delete_template(request, image_text_id):
+    ImageText.objects.get(id=image_text_id).delete()
+    return redirect('history')
+
+@require_GET
+def search(request):
+    image_name = request.GET.get('image_name', '')
+    images = search_docker_images(image_name)  # call your function here
+    return JsonResponse(images, safe=False)
     
     
