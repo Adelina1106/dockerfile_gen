@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import JsonResponse
-from .utils import generate_dockerfile, search_docker_images
+from .utils import generate_dockerfile, search_docker_images, create_dockerfile
 from django.contrib.auth.decorators import login_required
 from .models import UserFileHistory
 from .models import ImageText
@@ -78,11 +78,12 @@ def home(request):
         user = request.POST.get('user')
         volume = request.POST.get('volume')
         workdir = request.POST.get('workdir')
+        action = request.POST.get('action')
 
 
         # in aceeasi metoda este si situatia in care se apasa oe search(selected_image nu e selectat) si cand se apasa pe submit
-        if selected_image:
-            dockerfile_content = generate_dockerfile(selected_image)
+        if action == 'submit' and selected_image:
+            # dockerfile_content = generate_dockerfile(selected_image)
             # Do something with dockerfile_content...
 
             # Open the template file and read its contents
@@ -92,33 +93,35 @@ def home(request):
                 
             images = search_docker_images(purpose)
             # Format the template string with the user's data
-            formatted_template = template.format(
-    username=request.user.username,
-    image_text=selected_image,
-    copy=copy_path,
-    add=add_file,
-    arg=arg,
-    cmd=cmd,
-    entrypoint=entrypoint,
-    env=env,
-    expose=expose,
-    healthcheck=healthcheck,
-    maintainer=maintainer,
-    onbuild=onbuild,
-    run=run,
-    shell=shell,
-    stopsignal=stopsignal,
-    user=user,
-    volume=volume,
-    workdir=workdir,
-    label=label
-)
+#             formatted_template = template.format(
+#     username=request.user.username,
+#     image_text=selected_image,
+#     copy=copy_path,
+#     add=add_file,
+#     arg=arg,
+#     cmd=cmd,
+#     entrypoint=entrypoint,
+#     env=env,
+#     expose=expose,
+#     healthcheck=healthcheck,
+#     maintainer=maintainer,
+#     onbuild=onbuild,
+#     run=run,
+#     shell=shell,
+#     stopsignal=stopsignal,
+#     user=user,
+#     volume=volume,
+#     workdir=workdir,
+#     label=label
+# )
+            
+            formatted_template = create_dockerfile(request)
             
             # formatted_template = formatted_template.replace('\n', '<br>')
 
             # Create a new ImageText and save it to the database
             ImageText.objects.create(user=request.user, text=formatted_template)
-        else:
+        elif action == 'search':
             images = search_docker_images(purpose)
             return render(request, 'home.html', {'images': images})
 

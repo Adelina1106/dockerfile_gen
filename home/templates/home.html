@@ -100,10 +100,10 @@
     {% csrf_token %}
     <div class="form-group">
       <!-- FROM -->
-        <label for="purpose">Purpose of the docker container's app:</label>
+        <label for="purpose">Purpose of the docker container's app <span style="color: red;">*</span></label>
         {% if not images %}
         <input type="text" id="purpose" name="purpose" required>
-        <input type="submit" value="Search">
+        <input type="submit" value="Search" onclick="setAction('search')">
         {%else%}
         <select id="selected_image" name="selected_image">
           {% for image in images %}
@@ -113,7 +113,7 @@
           </option>
           {% endfor %}
       </select>
-      <input type="submit" value="Search">
+      <input type="submit" value="Search" onclick="setAction('search')">
         {% endif %}
     </div>
 
@@ -185,14 +185,31 @@
 <label for="workdir">Workdir:</label>
 <input type="text" id="workdir" name="workdir">
     <div>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" onclick="setAction('submit')">
     </div>
+    <!-- Variabila pentru a vedea daca e search sau submit -->
+    <input type="hidden" id="action" name="action">
 </form>
     <br>
     <br>
     <a href="{% url 'history' %}">History</a>
 </body>
 </html>
+
+<script>
+  function setAction(action) {
+  //   if (action === 'submit') {
+  //   var purpose = document.getElementById('purpose');
+  //   if (!purpose.value) {
+  //     alert('FROM directive is mandatory in a dockerfile');
+  //     return;
+  //   }
+  // }
+    document.getElementById('action').value = action;
+    // Submit the form
+    document.getElementById('myForm').submit();
+  }
+  </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -214,7 +231,7 @@ $(document).ready(function(){
           }));
         });
         // Change the button text to 'Submit'
-        $('input[type="submit"]').val('Submit');
+        // $('input[type="submit"]').val('Submit');
       }
     });
   });
@@ -242,7 +259,7 @@ $(document).ready(function(){
           }));
         });
         // Change the button text to 'Submit'
-        $('input[type="submit"]').val('Submit');
+        // $('input[type="submit"]').val('Submit');
       }
     });
   });

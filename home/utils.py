@@ -1,5 +1,7 @@
 import requests
+import os, re
 import json
+from django.conf import settings
 from django.views.decorators.cache import cache_control
 
 
@@ -45,8 +47,46 @@ def generate_dockerfile(purpose):
 
     return dockerfile_content
 
-def no_cache(view_func):
-    @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-    def _wrapped_view_func(*args, **kwargs):
-        return view_func(*args, **kwargs)
-    return _wrapped_view_func
+def create_dockerfile(request):
+  if request.method == 'POST':
+    # Map field names to placeholders
+    fields = {
+      'selected_image': 'image_text',
+      'label': 'LABEL',
+      'copy': 'COPY',
+      'add': 'ADD',
+        'arg': 'ARG',
+        'cmd': 'CMD',
+        'entrypoint': 'ENTRYPOINT',
+        'env': 'ENV',
+        'expose': 'EXPOSE',
+        'healthcheck': 'HEALTHCHECK',
+        'maintainer': 'MAINTAINER',
+        'onbuild': 'ONBUILD',
+        'run': 'RUN',
+        'shell': 'SHELL',
+        'stopsignal': 'STOPSIGNAL',
+        'user': 'USER',
+        'volume': 'VOLUME',
+        'workdir': 'WORKDIR'
+    }
+
+    # Load the Dockerfile template
+    template_path = os.path.join(settings.BASE_DIR, 'home/', 'dockerfile_template.txt')
+    with open(template_path, 'r') as file:
+      dockerfile = file.read()
+
+    # Replace each placeholder with the corresponding value or an empty string
+    for field, placeholder in fields.items():
+      value = request.POST.get(field)
+      if value:
+        dockerfile = dockerfile.replace('{' + placeholder + '}', placeholder + ' ' + value + '\n\n')
+      else:
+        dockerfile = dockerfile.replace('{' + placeholder + '}', '')
+
+    dockerfile = re.sub('\n\s*\n{2,}', '\n\n', dockerfile)
+
+    # Now dockerfile contains the filled in Dockerfile
+    return dockerfile
+
+
