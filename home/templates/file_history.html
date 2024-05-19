@@ -1,16 +1,66 @@
-{% if dockerfiles %}
-  <ul>
-    {% for dockerfile in dockerfiles %}
-    <li><pre>{{ dockerfile.text }}</pre>
-      <form action="{% url 'delete_template' dockerfile.id %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Delete">
-      </form></li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No files found</p>
-{% endif %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  <title>File History</title>
+</head>
+<body>
+  {% include 'header.html' %}
+
+
+  <div class="container mt-5">
+    <h2 class="mb-3">File History</h2>
+    {% if dockerfiles %}
+      <div class="list-group">
+        {% for dockerfile in dockerfiles %}
+  <div class="list-group-item">
+    <h5 class="mb-1">Date: {{ dockerfile.timestamp|date:"Y-m-d" }}</h5>
+    <p class="mb-1">Purpose: {{ dockerfile.purpose }}</p>
+    <form action="{% url 'delete_template' dockerfile.id %}" method="POST" style="display: inline-block;">
+      {% csrf_token %}
+      <input type="submit" value="Delete" class="btn btn-danger btn-sm">
+    </form>
+    <!-- See Dockerfile button -->
+    <button type="button" class="btn btn-primary btn-sm ml-2" data-toggle="modal" data-target="#dockerfileModal{{dockerfile.id}}">
+      See Dockerfile
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="dockerfileModal{{dockerfile.id}}" tabindex="-1" role="dialog" aria-labelledby="dockerfileModalLabel{{dockerfile.id}}" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="dockerfileModalLabel{{dockerfile.id}}">Dockerfile Content</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="height: 400px; overflow-y: auto;">
+            <pre>{{ dockerfile.text }}</pre>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="{% url 'write_dockerfile'%}" class="btn btn-primary">Modify Dockerfile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+      </div>
+    {% else %}
+      <p class="alert alert-warning">No files found</p>
+    {% endif %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
 
 <!-- <script>
   window.onload = function() {

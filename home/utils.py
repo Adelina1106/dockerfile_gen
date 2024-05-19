@@ -51,7 +51,7 @@ def create_dockerfile(request):
   if request.method == 'POST':
     # Map field names to placeholders
     fields = {
-      'selected_image': 'image_text',
+      'selected_image': 'FROM',
       'label': 'LABEL',
       'copy': 'COPY',
       'add': 'ADD',

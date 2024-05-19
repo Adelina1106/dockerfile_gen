@@ -120,7 +120,7 @@ def home(request):
             # formatted_template = formatted_template.replace('\n', '<br>')
 
             # Create a new ImageText and save it to the database
-            ImageText.objects.create(user=request.user, text=formatted_template)
+            ImageText.objects.create(user=request.user,purpose = selected_image, text=formatted_template)
         elif action == 'search':
             images = search_docker_images(purpose)
             return render(request, 'home.html', {'images': images})
@@ -132,16 +132,16 @@ def get_all_images(request):
     images = search_docker_images(query)
     return JsonResponse({'images': images})
 
-@login_required
-def create_file(request):
-    if request.method == 'POST':
-        text = request.POST.get('selected_image')
-        ImageText.objects.create(user=request.user, text=text)
-        file_content = request.POST.get('file_content')
-        if file_content:  # Simple validation to check if content is not empty
-            UserFileHistory.objects.create(user=request.user, file=file_content)
-            return redirect('history')
-    return render(request, 'create_file.html')
+# @login_required
+# def create_file(request):
+#     if request.method == 'POST':
+#         text = request.POST.get('selected_image')
+#         ImageText.objects.create(user=request.user, purpose=text, text=text)
+#         file_content = request.POST.get('file_content')
+#         if file_content:  # Simple validation to check if content is not empty
+#             UserFileHistory.objects.create(user=request.user, file=file_content)
+#             return redirect('history')
+#     return render(request, 'create_file.html')
 
 @login_required
 @never_cache
@@ -162,6 +162,11 @@ def file_history(request):
     #     f.write(formatted_template)
 
     return render(request, 'file_history.html', {'dockerfiles': dockerfiles})
+
+@login_required
+def modify_dockerfile(request):
+    # your code here...
+    return render(request, 'write_dockerfile.html')
 
 @never_cache
 def delete_template(request, image_text_id):

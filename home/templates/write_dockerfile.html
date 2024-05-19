@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VS Code-like Text Editor</title>
+  <style>
+    body {
+      font-family: 'Fira Code', monospace;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #1e1e1e; /* Dark background color */
+      color: #d4d4d4; /* Light text color */
+    }
+    
+    #editor-container {
+      display: flex;
+      height: 100vh;
+    }
+    
+    #sidebar {
+      width: 300px;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+    
+    #editor {
+      flex: 1;
+      background-color: #2d2d2d; /* Darker background color */
+      padding: 20px;
+      font-size: 14px;
+      border-left: 1px solid #555; /* Darker border color */
+      overflow: auto;
+      color: #d4d4d4; /* Light text color */
+    }
+
+    ::selection {
+      background-color: #073642; /* Selection color */
+    }
+
+    /* Google Font for Fira Code */
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+  </style>
+
+{% include 'header.html' %}
+</head>
+<body>
+
+<div id="editor-container">
+  <div id="sidebar">
+    <h2>Explorer</h2>
+    <ul>
+      <li>File 1</li>
+      <li>File 2</li>
+      <li>File 3</li>
+    </ul>
+    <h2>Search</h2>
+    <input type="text" placeholder="Search...">
+  </div>
+  <div id="editor" contenteditable="true">
+    <p>Welcome to the VS Code-like Text Editor!</p>
+  </div>
+</div>
+
+</body>
+</html>
