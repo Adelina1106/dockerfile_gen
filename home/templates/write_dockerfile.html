@@ -1,25 +1,39 @@
-{% load static %}
-
+{% load i18n static admin_material %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VS Code-like Text Editor</title>
+  
+  <!-- External CSS for Fira Code font -->
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+  <!-- External CSS for additional styling -->
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
   <style>
     body {
       font-family: 'Fira Code', monospace;
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background-color: #1e1e1e; /* Dark background color */
+      /* background-color: #1e1e1e; Dark background color */
       color: #d4d4d4; /* Light text color */
     }
     
-    #editor-container {
+    #header {
+      /* background-color: #333; */
+      color: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+    
+    #main-container {
       display: flex;
-      height: 100vh;
+      height: calc(100vh - 130px); /* Adjust height to account for header */
     }
     
     #sidebar {
@@ -27,45 +41,158 @@
       background-color: #333;
       color: #fff;
       padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
     }
     
+    #sidebar h2 {
+      margin-top: 0;
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    #sidebar li {
+      margin: 10px 0;
+    }
+
+    #sidebar a {
+      color: #d4d4d4;
+      text-decoration: none;
+    }
+
+    #sidebar a:hover {
+      text-decoration: underline;
+    }
+    
+    #editor-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      /* background-color: #1e1e1e; Dark background color */
+    }
+
     #editor {
       flex: 1;
-      background-color: #2d2d2d; /* Darker background color */
-      padding: 20px;
+      /* background-color: #2d2d2d; Darker background color */
+      padding: 0; /* No padding needed for Ace editor */
       font-size: 14px;
       border-left: 1px solid #555; /* Darker border color */
       overflow: auto;
       color: #d4d4d4; /* Light text color */
+      outline: none;
+      position: relative; /* Position relative for line numbers */
+    }
+
+    .save-container {
+      padding: 10px;
+      background-color: #333;
+      border-top: 1px solid #555;
+      text-align: right;
+    }
+
+    .save-container button {
+      background-color: #007acc;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .save-container button:hover {
+      background-color: #005fa3;
     }
 
     ::selection {
       background-color: #073642; /* Selection color */
     }
-
-    /* Google Font for Fira Code */
-    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
   </style>
-
-{% include 'header.html' %}
 </head>
 <body>
 
-<div id="editor-container">
+<div id="header">
+  {% include 'header.html' %}
+</div>
+
+<div id="main-container">
   <div id="sidebar">
     <h2>Explorer</h2>
     <ul>
-      <li>File 1</li>
-      <li>File 2</li>
-      <li>File 3</li>
+      {% for file in user_files %}
+      <li><a href="{% url 'write_dockerfile_with_id' file.id %}">{{ file.purpose }}</a></li>
+      {% endfor %}
     </ul>
     <h2>Search</h2>
     <input type="text" placeholder="Search...">
   </div>
-  <div id="editor" contenteditable="true">
-    <p>Welcome to the VS Code-like Text Editor!</p>
+  
+  <div id="editor-container">
+    <div id="editor">
+      {% if selected_file %}
+        {{ selected_file.text }}
+      {% else %}
+        <p>Welcome to the VS Code-like Text Editor!</p>
+      {% endif %}
+    </div>
+    <div class="save-container">
+      <form method="POST" onsubmit="return validateDockerfile();">
+        {% csrf_token %}
+        <input type="hidden" id="file-content" name="file-content">
+        <button type="submit" name="action" value="build" onclick="setAction('build')">Build dockerfile</button>
+        <button type="submit" name="action" value="check" onclick="setAction('check')">Check syntax</button>
+        <button type="submit" name="action" value="save" onclick="setAction('save')">Save</button>
+      </form>
+      <div id="error-message" style="color: red;" lint-result="{{ lint_result }}"></div>
+    </div>
   </div>
 </div>
+
+<script>
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/chaos"); // Set the editor theme
+  editor.getSession().setMode("ace/mode/dockerfile");
+  editor.setShowPrintMargin(false);
+  editor.setOption("wrap", "free");
+
+  var action;
+
+  function setAction(a) {
+      action = a;
+  }
+
+  function validateDockerfile() {
+      var editorContent = editor.getValue(); // Get content from Ace editor
+      document.getElementById('file-content').value = editorContent;
+
+      // Make an AJAX request to lint the Dockerfile
+      $.ajax({
+          url: '',  // The URL of your view function
+          type: 'POST',
+          data: {
+              'file-content': editorContent,
+              'action': action,
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+          },
+          dataType: 'json',
+          success: function (data) {
+              // Update the error-message div with the lint result
+              if (data.error) {
+                  document.getElementById('error-message').innerText = data.error;
+              } else {
+                  document.getElementById('error-message').innerText = data.message;
+              }
+          }
+      });
+
+      // Prevent the form from being submitted
+      return false;
+  }
+</script>
 
 </body>
 </html>

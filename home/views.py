@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import JsonResponse
-from .utils import generate_dockerfile, search_docker_images, create_dockerfile
+from .utils import lint_dockerfile, search_docker_images, create_dockerfile
 from django.contrib.auth.decorators import login_required
 from .models import UserFileHistory
 from .models import ImageText
@@ -14,6 +14,9 @@ import os
 from django.conf import settings
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from .utils import build_dockerfile
 # Create your views here.
 
 def landing(request):
@@ -118,7 +121,6 @@ def home(request):
             formatted_template = create_dockerfile(request)
             
             # formatted_template = formatted_template.replace('\n', '<br>')
-
             # Create a new ImageText and save it to the database
             ImageText.objects.create(user=request.user,purpose = selected_image, text=formatted_template)
         elif action == 'search':
@@ -164,9 +166,50 @@ def file_history(request):
     return render(request, 'file_history.html', {'dockerfiles': dockerfiles})
 
 @login_required
-def modify_dockerfile(request):
+def modify_dockerfile(request, file_id=None):
     # your code here...
-    return render(request, 'write_dockerfile.html')
+    user_files = ImageText.objects.filter(user=request.user)
+    selected_file = None
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'save':
+            print('Save action')
+            updated_content = request.POST.get('file-content')
+            if file_id:
+                # If a file is selected, update the existing file
+                selected_file = ImageText.objects.get(id=file_id)
+                selected_file.text = updated_content
+                selected_file.save()
+                print('File updated')
+            else:
+            # If no file is selected, create a new file
+                print('File created')
+                selected_file = ImageText.objects.create(user=request.user, text=updated_content)
+            return HttpResponseRedirect(reverse('write_dockerfile_with_id', args=[selected_file.id]))
+        elif action == 'build':
+            # Get the updated content from the form
+            updated_content = request.POST.get('file-content')
+            build_result = build_dockerfile(updated_content)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse(build_result)
+            if build_result:
+                build_message = str(build_result.get('message', ''))  # Asigură-te că obții mesajul din rezultat
+                return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'lint_result': build_message})
+            # Handle the case where the Dockerfile is valid
+        elif action == 'check':
+            updated_content = request.POST.get('file-content')
+            lint_result = lint_dockerfile(updated_content)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse(lint_result)
+            if lint_result:
+                build_message = str(lint_result.get('message', ''))  # Asigură-te că obții mesajul din rezultat
+                return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'lint_result': build_message})
+            # Handle the case where the Dockerfile is valid
+
+    if file_id:
+        selected_file = ImageText.objects.get(id=file_id)
+    return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file})
 
 @never_cache
 def delete_template(request, image_text_id):
@@ -178,5 +221,12 @@ def search(request):
     image_name = request.GET.get('image_name', '')
     images = search_docker_images(image_name)  # call your function here
     return JsonResponse(images, safe=False)
+
+def open_file(request, file_id):
+    # Fetch the file
+    file = ImageText.objects.get(id=file_id)
+    # Open the file in the editor
+    # ...
+    return render(request, 'open_file.html', {'file': file})
     
     

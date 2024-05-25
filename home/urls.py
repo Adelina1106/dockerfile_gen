@@ -16,5 +16,6 @@ urlpatterns = [
     # path('create/', views.create_file, name='create_image'),
      path('delete_template/<int:image_text_id>/', views.delete_template, name='delete_template'),
     path('search/', views.search, name='search'),
-     path('write_dockerfile/', views.modify_dockerfile, name='write_dockerfile'),
+    path('write_dockerfile/', views.modify_dockerfile, name='write_dockerfile'),
+    path('write_dockerfile/<int:file_id>/', views.modify_dockerfile, name='write_dockerfile_with_id'),
 ]

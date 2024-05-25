@@ -1,8 +1,10 @@
-import requests
+import requests, docker
 import os, re
 import json
 from django.conf import settings
 from django.views.decorators.cache import cache_control
+import subprocess
+from django.http import JsonResponse
 
 
 def search_docker_images(query):
@@ -88,5 +90,73 @@ def create_dockerfile(request):
 
     # Now dockerfile contains the filled in Dockerfile
     return dockerfile
+  
+def convert_to_windows_path(path):
+    # Remove the '/mnt/' prefix and split the path into components
+    components = path[5:].split('/')
+    # The first component is the drive letter; add ':' to it
+    components[0] += ':'
+    # Join the components with '\\'
+    return '\\\\'.join(components)
+  
+def lint_dockerfile(dockerfile_content):
+    temp_file_path = os.path.join(settings.BASE_DIR, 'home/', 'dockerfile.txt')
+    with open(temp_file_path, 'w') as file:
+        file.write(dockerfile_content)
+    temp_file_path = convert_to_windows_path(temp_file_path)
+    print(temp_file_path)
+
+    try:
+        # Run Hadolint on the temporary file
+        result = subprocess.run(
+            ["/mnt/c/Users/Lenovo Yoga/Desktop/licenta/dockerfile_gen/hadolint.exe", temp_file_path],
+            text=True,
+            capture_output=True
+        )
+        
+        output = result.stdout
+        # Remove file paths and ANSI escape codes
+        output = re.sub(r'.*?:\d+ ', '', output)
+        output = re.sub(r'\x1b\[.*?m', '', output)
+        # Split the output into lines and get the last line
+        return {'message': output}
+    except subprocess.CalledProcessError as e:
+        return {'error': e.stderr}
+
+def build_dockerfile(dockerfile_content):
+    client = docker.from_env()
+    temp_file_path = os.path.join(settings.BASE_DIR, 'home/', 'Dockerfile')
+    directory_file_path = os.path.join(settings.BASE_DIR, 'home/')
+    
+    with open(temp_file_path, 'w') as file:
+        file.write(dockerfile_content)
+    
+    container = None
+    try:
+        # Build the Docker image defined by the Dockerfile
+        image, build_logs = client.images.build(path=directory_file_path, tag='temp-image', rm=True)
+        print(client.images.build(path=directory_file_path, tag='temp-image', rm=True))
+        print("ok")
+        # Convert build logs to string
+        build_output = '\n'.join([log.get('stream', '') for log in build_logs])
+        
+        return {'message': build_output.strip()}  # Return the build output as a string
+    except docker.errors.BuildError as e:
+        # If the build fails, capture the error message from the logs
+        error_message = ''
+        for log in e.build_log:
+            if 'error' in log:
+                error_message += log['error']
+            elif 'errorDetail' in log:
+                error_message += log['errorDetail']['message']
+            else:
+                error_message += str(log)
+        
+        return {'error': error_message.strip()}  # Return the error message as a string except docker.errors.BuildError as e:
+        # If the build fails, capture the error message from the logs
+        error_message = e.build_log
+        return {'message': str(e.build_log)}
+    except Exception as e:
+        return {'message': str(e)}
 
 

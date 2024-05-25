@@ -7,6 +7,7 @@ class UserFileHistory(models.Model):
     file = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
+# ARE DEJA CAMP ID PENTRU CA IL FACE DJANGO AUTOMAT
 class ImageText(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE) #associates each image text with an user
     purpose = models.TextField(default="Default purpose")
