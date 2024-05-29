@@ -1,6 +1,6 @@
 
       
-        FROM java:6
+        FROM google/cadvisor:latest
 
 
       

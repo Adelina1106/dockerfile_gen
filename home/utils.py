@@ -5,6 +5,9 @@ from django.conf import settings
 from django.views.decorators.cache import cache_control
 import subprocess
 from django.http import JsonResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def search_docker_images(query):
@@ -158,5 +161,37 @@ def build_dockerfile(dockerfile_content):
         return {'message': str(e.build_log)}
     except Exception as e:
         return {'message': str(e)}
+    
+    import json
 
+import json
+import json
+
+def parse_and_format_server_messages(text):
+    # Definim un pattern pentru a identifica conținutul mesajului
+    pattern_stream = r'\{\'stream\': \'(.*?)\'\}'
+    pattern_status = r'\{\'status\': \'(.*?)\',(?:.*?)\}'
+    pattern_depr = r'\[DEPRECATION NOTICE\]\': \'(.*?)\'\}'
+    pattern_message = r'\{\'message\': \'(.*?)\'\}'
+    
+    # Folosim re.findall pentru a găsi toate potrivirile cu pattern-urile în text
+    matches_stream = re.findall(pattern_stream, text)
+    matches_status = re.findall(pattern_status, text)
+    matches_depr = re.findall(pattern_depr, text)
+    matches_message = re.findall(pattern_message, text)
+    
+    # Concatenăm mesajele pentru ambele chei
+    stream_messages = '\n'.join(matches_stream)
+    status_messages = '\n'.join(matches_status)
+    depr_messages = '\n'.join(matches_depr)
+    message_messages = '\n'.join(matches_message)
+
+    # Înlocuim mesajele originale din text cu cele extrase
+    text = re.sub(pattern_stream, stream_messages, text)
+    text = re.sub(pattern_status, status_messages, text)
+    text = re.sub(pattern_depr, depr_messages, text)
+    text = re.sub(pattern_message, message_messages, text)
+
+    # Returnăm textul modificat
+    return text
 

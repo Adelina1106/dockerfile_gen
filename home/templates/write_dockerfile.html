@@ -79,7 +79,7 @@
       flex: 1;
       /* background-color: #2d2d2d; Darker background color */
       padding: 0; /* No padding needed for Ace editor */
-      font-size: 14px;
+      font-size: 2.3vh;
       border-left: 1px solid #555; /* Darker border color */
       overflow: auto;
       color: #d4d4d4; /* Light text color */
@@ -108,6 +108,26 @@
       background-color: #005fa3;
     }
 
+    .add-button {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+    }
+
+    .add-button:hover {
+      background-color: #555;
+    }
+
+    .add-button img {
+    margin-right: 10px;
+    width: 20px;
+  }
+
+
     ::selection {
       background-color: #073642; /* Selection color */
     }
@@ -127,6 +147,10 @@
       <li><a href="{% url 'write_dockerfile_with_id' file.id %}">{{ file.purpose }}</a></li>
       {% endfor %}
     </ul>
+    <button id="add-dockerfile" class="add-button">
+      <img src="{% static 'assets/img/plus.png' %}" alt="Add">
+      Add new Dockerfile
+    </button>
     <h2>Search</h2>
     <input type="text" placeholder="Search...">
   </div>
@@ -140,17 +164,19 @@
       {% endif %}
     </div>
     <div class="save-container">
+      <img id="loading-image" src="{% static 'assets/img/loading.gif' %}" style="display: none; width: 15%; height: auto;  margin-right: 47%;">
       <form method="POST" onsubmit="return validateDockerfile();">
         {% csrf_token %}
         <input type="hidden" id="file-content" name="file-content">
-        <button type="submit" name="action" value="build" onclick="setAction('build')">Build dockerfile</button>
+        <button type="submit" name="action" value="build" onclick="setAction('build')" ondblclick="">Build dockerfile</button>
         <button type="submit" name="action" value="check" onclick="setAction('check')">Check syntax</button>
         <button type="submit" name="action" value="save" onclick="setAction('save')">Save</button>
       </form>
-      <div id="error-message" style="color: red;" lint-result="{{ lint_result }}"></div>
+      <div id="error-message" style="color: red;" lint-result="{{ lint_result.message }}"></div>
     </div>
   </div>
 </div>
+
 
 <script>
   var editor = ace.edit("editor");
@@ -168,6 +194,7 @@
   function validateDockerfile() {
       var editorContent = editor.getValue(); // Get content from Ace editor
       document.getElementById('file-content').value = editorContent;
+      $('#loading-image').show();
 
       // Make an AJAX request to lint the Dockerfile
       $.ajax({
@@ -180,6 +207,7 @@
           },
           dataType: 'json',
           success: function (data) {
+            $('#loading-image').hide();
               // Update the error-message div with the lint result
               if (data.error) {
                   document.getElementById('error-message').innerText = data.error;
@@ -192,7 +220,13 @@
       // Prevent the form from being submitted
       return false;
   }
+
+  document.getElementById('add-dockerfile').addEventListener('click', function() {
+  var editor = ace.edit("editor");
+  editor.setValue("");
+});
 </script>
+
 
 </body>
 </html>

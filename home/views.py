@@ -16,7 +16,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from .utils import build_dockerfile
+from .utils import build_dockerfile, parse_and_format_server_messages
 # Create your views here.
 
 def landing(request):
@@ -189,14 +189,26 @@ def modify_dockerfile(request, file_id=None):
             return HttpResponseRedirect(reverse('write_dockerfile_with_id', args=[selected_file.id]))
         elif action == 'build':
             # Get the updated content from the form
+            print('Build action')
             updated_content = request.POST.get('file-content')
             build_result = build_dockerfile(updated_content)
+            formatted_messages = parse_and_format_server_messages(build_result.get('message', ''))
+            error_message = parse_and_format_server_messages(build_result.get('error', ''))
+            # print(build_result.get('message', ''), build_result.get('error', ''))
+            # print(formatted_messages)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse(build_result)
+                return JsonResponse({'message': formatted_messages, 'error': error_message})
             if build_result:
-                build_message = str(build_result.get('message', ''))  # Asigură-te că obții mesajul din rezultat
-                return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'lint_result': build_message})
-            # Handle the case where the Dockerfile is valid
+                print("here")
+                raw_messages = build_result.get('error', '')
+                formatted_messages = parse_and_format_server_messages(raw_messages)
+                build_message = '\n'.join(formatted_messages)
+                return render(request, 'write_dockerfile.html', {
+                    'user_files': user_files,
+                    'selected_file': selected_file,
+                    'lint_result': formatted_messages
+                })
+                # Handle the case where the Dockerfile is valid
         elif action == 'check':
             updated_content = request.POST.get('file-content')
             lint_result = lint_dockerfile(updated_content)
