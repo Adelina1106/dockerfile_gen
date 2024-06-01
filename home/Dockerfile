@@ -1,8 +1,6 @@
 
       
-        FROM java:6
-
-SHELL Expose
+        FROM node:lts-alpine3.20
 
 
       

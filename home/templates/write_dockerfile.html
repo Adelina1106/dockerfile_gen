@@ -131,6 +131,72 @@
     ::selection {
       background-color: #073642; /* Selection color */
     }
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%; /* Could be more or less, depending on screen size */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  max-width: 600px;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Input fields */
+.input-container input {
+  width: 80%; /* Adjust this to change the width of the input fields */
+  padding: 12px 20px;
+  margin: 8px auto; /* Auto margins for horizontal centering */
+  display: block; /* Make the input fields block elements to allow for centering */
+  border: 1px solid #ccc;
+  border-radius: 150px; /* Make the input fields more circular */
+  box-sizing: border-box;
+}
+
+/* Submit button */
+.submit-button {
+  background-color: #006ebc;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px auto; /* Auto margins for horizontal centering */
+  display: block; /* Make the button a block element to allow for centering */
+  border: none;
+  cursor: pointer;
+  width: 80%; /* Adjust this to change the width of the button */
+  border-radius: 50px; /* Make the button more circular */
+}
+
+.submit-button:hover {
+  opacity: 0.8;
+}
   </style>
 </head>
 <body>
@@ -167,18 +233,80 @@
       <img id="loading-image" src="{% static 'assets/img/loading.gif' %}" style="display: none; width: 15%; height: auto;  margin-right: 47%;">
       <form method="POST" onsubmit="return validateDockerfile();">
         {% csrf_token %}
-        <input type="hidden" id="file-content" name="file-content">
         <button type="submit" name="action" value="build" onclick="setAction('build')" ondblclick="">Build dockerfile</button>
         <button type="submit" name="action" value="check" onclick="setAction('check')">Check syntax</button>
         <button type="submit" name="action" value="save" onclick="setAction('save')">Save</button>
+        <button type="submit" id="push" name="action" value="push" onclick="setAction('push')">Push to dockerhub</button>
       </form>
       <div id="error-message" style="color: red;" lint-result="{{ lint_result.message }}"></div>
     </div>
   </div>
 </div>
 
+<!-- The Modal -->
+<div id="docker-push-modal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Login to DockerHub</h2>
+    <form id="docker-push" method="POST">
+      {% csrf_token %}
+      <input type="hidden" id="file-content" name="file-content">
+      <div class="input-container">
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <label for="docker_username" style="margin-right: 10px;">Docker Hub Username</label>
+        <input type="text" id="docker_username" name="docker_username" placeholder="Docker Hub Username" style="width: 250px;">
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <label for="docker_password" style="margin-right: 10px;">Docker Hub Password</label>
+        <input type="password" id="docker_password" name="docker_password" placeholder="Docker Hub Password" style="width: 250px;">
+    </div>
+</div>
+      <button type="submit" class="submit-button"><img src="{% static 'assets/img/dockerhub.png' %}" style="width: 45px; height: 45px;" alt="Submit"> Push to Docker Hub</button>
+    </form>
+    <img id="loading-image-push" src="{% static 'assets/img/loading.gif' %}" style="display: none; width: 30%; height: auto;margin: auto;">
+    <p id="login-error" style="color: red; display: none; text-align: center;"></p>
+    <p id="login-success" style="color: green; display: none; text-align: center;"></p>
+  </div>
+</div>
+
 
 <script>
+
+$(document).ready(function() {
+    // Get the modal
+    var dockerLoginModal = $("#docker-push-modal");
+
+    // Get the button that opens the modal
+    var dockerLoginButton = $("#push");
+
+    // Get the <span> element that closes the modal
+    var dockerLoginClose = $(".close");
+
+    // When the user clicks the button, open the modal 
+    dockerLoginButton.on('click', function(event) {
+        event.preventDefault(); // Prevent the form from being submitted
+        $('#login-error').text('');
+        $('#login-success').text('');
+        dockerLoginModal.show();
+    });
+
+    // When the user clicks on <span> (x), close the modal
+    dockerLoginClose.on('click', function() {
+        dockerLoginModal.hide();
+    });
+
+
+    // When the user clicks anywhere outside of the modal, close it
+    $(window).on('click', function(event) {
+        if (event.target == dockerLoginModal[0]) {
+            dockerLoginModal.hide();
+        }
+    });
+});
+
+
+
   var editor = ace.edit("editor");
   editor.setTheme("ace/theme/chaos"); // Set the editor theme
   editor.getSession().setMode("ace/mode/dockerfile");
@@ -202,6 +330,7 @@
           type: 'POST',
           data: {
               'file-content': editorContent,
+              'docker_name': '{{ selected_file.purpose }}',
               'action': action,
               csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
           },
@@ -215,6 +344,53 @@
                   document.getElementById('error-message').innerText = data.message;
               }
           }
+      });
+
+      // Prevent the form from being submitted
+      return false;
+  }
+
+  window.onload = function() {
+  var form = document.getElementById('docker-push');
+  if (form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent the form from being submitted
+      pushDockerfile(); // Call the pushDockerfile function
+    });
+  }
+};
+
+
+  function pushDockerfile() {
+      var editorContent = editor.getValue(); // Get content from Ace editor
+      document.getElementById('file-content').value = editorContent;
+      console.log('editor content:', editorContent);
+      $('#loading-image-push').show();
+
+      // Make an AJAX request to lint the Dockerfile
+      $.ajax({
+          url: "{% url 'dockerfile_push' %}",  // The URL of your view function
+          type: 'POST',
+          data: {
+              'file-content': editorContent,
+              'docker_name': '{{ selected_file.purpose }}',
+              'docker_username': $('input[name=docker_username]').val(),
+              docker_password: $('input[name=docker_password]').val(),
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+          },
+          dataType: 'json',
+          
+          success: function (data) {
+            $('#loading-image-push').hide();
+            // Update the error-message div with the lint result
+            if (data.error) {
+              // If there's an error, display the error message
+              $('#login-error').text('Invalid username or password').show();
+            } else {
+              // If there's no error, display the success message
+              $('#login-success').text('Image pushed to Docker Hub').show();
+            }
+}
       });
 
       // Prevent the form from being submitted

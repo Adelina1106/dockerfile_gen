@@ -18,4 +18,6 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('write_dockerfile/', views.modify_dockerfile, name='write_dockerfile'),
     path('write_dockerfile/<int:file_id>/', views.modify_dockerfile, name='write_dockerfile_with_id'),
+    # path('dockerhub_login/', views.dockerhub_login, name='dockerhub_login'),
+    path('dockerfile_push/', views.dockerfile_push, name='dockerfile_push'),
 ]

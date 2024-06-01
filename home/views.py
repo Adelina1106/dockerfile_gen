@@ -17,6 +17,8 @@ from django.views.decorators.http import require_GET
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .utils import build_dockerfile, parse_and_format_server_messages
+import requests, docker
+from docker.errors import APIError
 # Create your views here.
 
 def landing(request):
@@ -218,6 +220,29 @@ def modify_dockerfile(request, file_id=None):
                 build_message = str(lint_result.get('message', ''))  # Asigură-te că obții mesajul din rezultat
                 return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'lint_result': build_message})
             # Handle the case where the Dockerfile is valid
+        elif action == 'push':
+            # Conectează-te la clientul Docker
+            client = docker.from_env()
+
+            # Numele imaginii Docker pe care dorești să o creezi și să o încarci pe DockerHub
+            docker_image_name = request.POST.get('docker_name')
+
+            # Calea către Dockerfile în sistemul de fișiere
+            dockerfile_path = '/cale/catre/Dockerfile'
+
+            # Construiește imaginea Docker folosind Dockerfile-ul din calea specificată
+            image, build_logs = client.images.build(path=dockerfile_path, tag=docker_image_name)
+
+            # Autentifică-te pe DockerHub (înlocuiește 'username' și 'password' cu credențialele tale reale)
+            client.login(username='username', password='password')
+
+            # Efectuează push-ul imaginii către DockerHub
+            push_logs = client.images.push(docker_image_name, stream=True)
+
+            # Returnează o pagină de succes sau de confirmare
+
+            return render(request, 'dockerfile_push_success.html')
+
 
     if file_id:
         selected_file = ImageText.objects.get(id=file_id)
@@ -240,5 +265,56 @@ def open_file(request, file_id):
     # Open the file in the editor
     # ...
     return render(request, 'open_file.html', {'file': file})
+
+
+
+
+def dockerfile_push(request):
+    if request.method == 'POST':
+        dockerfile_content = request.POST.get('file-content')
+        print(dockerfile_content)
+
+        temp_file_path = os.path.join(settings.BASE_DIR, 'home/', 'Dockerfile')
+        directory_file_path = os.path.join(settings.BASE_DIR, 'home/')
+        
+        with open(temp_file_path, 'w') as file:
+            file.write(dockerfile_content)
+        username = request.POST.get('docker_username')
+        password = request.POST.get('docker_password')
+              
+        try:
+            client = docker.from_env()
+            client.login(username, password)
+            # Build and push the Docker image...
+            # You'll need to replace 'path/to/dockerfile' and 'myusername/myimage' with your actual values
+            image, build_logs = client.images.build(path=directory_file_path, tag=f'{username}/myimage', rm=True)
+            push_logs = client.images.push(f'{username}/myimage', stream=True)
+            for line in push_logs:
+                print(line)
+            print("success")
+            return JsonResponse({'status': 'success'})  # Return a JSON response for success
+        except APIError:
+            print("failure")
+            return JsonResponse({'status': 'failure', 'error': 'Invalid username or password'})  # Return a JSON response for failure
+        
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def docker_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('docker_username')
+        password = request.POST.get('docker_password')
+
+        if username and password:
+            client = docker.from_env()
+            try:
+                client.login(username, password)
+                return JsonResponse({'status': 'success'})
+            except docker.errors.APIError:
+                return JsonResponse({'status': 'failure', 'error': 'Invalid username or password'})
+
+        else:
+            return JsonResponse({'status': 'failure', 'error': 'Username and password are required'})
+
     
     
