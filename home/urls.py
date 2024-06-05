@@ -20,4 +20,7 @@ urlpatterns = [
     path('write_dockerfile/<int:file_id>/', views.modify_dockerfile, name='write_dockerfile_with_id'),
     # path('dockerhub_login/', views.dockerhub_login, name='dockerhub_login'),
     path('dockerfile_push/', views.dockerfile_push, name='dockerfile_push'),
+    path('docker_compose/', views.docker_compose, name='docker_compose'),
+    path('delete_template_editor/<int:image_text_id>/', views.delete_template_editor, name='delete_template_editor'),
+    path('dockerfile_learn/', views.dockerfile_learn, name='dockerfile_learn'),
 ]

@@ -28,3 +28,104 @@ export DB_USERNAME=adelina
 export DB_PASS=student
 export DB_HOST=localhost
 export DB_PORT=3306
+
+
+
+
+
+VOLUME
+WORKDIR
+
+
+Conectare baza de date:
+mysql -u adelina -pstudent dockerfile_generator_database
+use dockerfile_generator_database;
+... comenzi;
+INSERT INTO home_dockerfile_instructions (name, type, type_env) VALUES
+    ('ADD', '2', '1'),
+    ('FROM', '1', '1'),
+    ('ARG', '2', '2'),
+    ('CMD', '2', '2'),
+    ('COPY', '2', '1'),
+    ('ENTRYPOINT', '2', '2'),
+    ('ENV', '2', '1'),
+    ('EXPOSE', '2', '1'),
+    ('HEALTHCHECK', '2', '2'),
+    ('LABEL', '2', '1'),
+    ('MANTAINER', '2', '2'),
+    ('ONBUILD', '2', '1'),
+    ('RUN', '2', '2'),
+    ('SHELL', '2', '2'),
+    ('STOPSIGNAL', '2', '1'),
+    ('USER', '2', '1'),
+    ('VOLUME', '2', '1'),
+    ('WORKDIR', '2', '1');
+
+
+INSERT INTO home_dockerfile_explanations (instruction_id, explanation, summary_explanation, created_at, source) VALUES
+(1, '-', 'Add local or remote files and directories', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(2, '-', 'Create a new build stage from a base image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(3, '-', 'Use build-time variables', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(4, '-', 'Specify default commands', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(5, '-', 'Copy files and directories', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(6, '-', 'Specify default executable', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(7, '-', 'Set environment variables', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(8, '-', 'Describe which ports your application is listening on', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(9, '-', 'Check a container\'s health on startup', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(10, '-', 'Add metadata to an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(11, '-', 'Specify the author of an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(12, '-', 'Specify instructions for when the image is used in a build', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(13, '-', 'Execute build commands', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(14, '-', 'Set the default shell of an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(15, '-', 'Specify the system call signal for exiting a container', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(16, '-', 'Set user and group ID', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(17, '-', 'Create volume mounts', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
+(18, '-', 'Change working directory', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/');
+
+
+https://heropatterns.com/
+
+
+
+BAZA DE DATE:
+Dockerfile, Dockerfiles_attributes,
+
+Dockerfile_commands - name, type(mandatory, etc), codexp
+dockerfile_commands_explnation - codexp, exp
+
+class UserRequests(models.Model):
+
+    # Fields
+    username = models.CharField(max_length=255)
+    timestemp = models.DateTimeField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    last_updated = models.DateTimeField(auto_now=True, editable=False)
+    STATUS_CHOICES = (
+        (1, 'Finish'),
+        (2, 'In process'),
+        (3, 'Ready to start'),
+        (4, 'Ready to add products'),
+        (5, 'Failed'),
+        (6, 'Deleted')
+    )
+
+    status = models.IntegerField(choices=STATUS_CHOICES)
+
+    class Meta:
+        ordering = ('-created',)
+
+    def __unicode__(self):
+        return u'%s' % self.pk
+
+    def __str__(self):
+        return str(self.id)
+
+    def get_absolute_url(self):
+        return reverse('marketplace_userrequests_detail', args=(self.pk,))
+
+    def get_update_url(self):
+        return reverse('marketplace_userrequests_update', args=(self.pk,))
+
+
+cereri ajax vs post?
+csrf token?

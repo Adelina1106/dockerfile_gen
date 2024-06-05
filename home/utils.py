@@ -1,4 +1,5 @@
 import requests, docker
+from .models import ImageText, Dockerfile_instructions
 import os, re
 import json
 from django.conf import settings
@@ -54,27 +55,32 @@ def generate_dockerfile(purpose):
 
 def create_dockerfile(request):
   if request.method == 'POST':
+
+    instructions = Dockerfile_instructions.objects.values_list('name', flat=True)
+
+        # Map field names to placeholders
+    fields = {instruction: instruction.upper() for instruction in instructions}
     # Map field names to placeholders
-    fields = {
-      'selected_image': 'FROM',
-      'label': 'LABEL',
-      'copy': 'COPY',
-      'add': 'ADD',
-        'arg': 'ARG',
-        'cmd': 'CMD',
-        'entrypoint': 'ENTRYPOINT',
-        'env': 'ENV',
-        'expose': 'EXPOSE',
-        'healthcheck': 'HEALTHCHECK',
-        'maintainer': 'MAINTAINER',
-        'onbuild': 'ONBUILD',
-        'run': 'RUN',
-        'shell': 'SHELL',
-        'stopsignal': 'STOPSIGNAL',
-        'user': 'USER',
-        'volume': 'VOLUME',
-        'workdir': 'WORKDIR'
-    }
+    # fields = {
+    #   'selected_image': 'FROM',
+    #   'label': 'LABEL',
+    #   'copy': 'COPY',
+    #   'add': 'ADD',
+    #     'arg': 'ARG',
+    #     'cmd': 'CMD',
+    #     'entrypoint': 'ENTRYPOINT',
+    #     'env': 'ENV',
+    #     'expose': 'EXPOSE',
+    #     'healthcheck': 'HEALTHCHECK',
+    #     'maintainer': 'MAINTAINER',
+    #     'onbuild': 'ONBUILD',
+    #     'run': 'RUN',
+    #     'shell': 'SHELL',
+    #     'stopsignal': 'STOPSIGNAL',
+    #     'user': 'USER',
+    #     'volume': 'VOLUME',
+    #     'workdir': 'WORKDIR'
+    # }
 
     # Load the Dockerfile template
     template_path = os.path.join(settings.BASE_DIR, 'home/', 'dockerfile_template.txt')

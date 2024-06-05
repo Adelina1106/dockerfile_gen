@@ -33,7 +33,7 @@
     
     #main-container {
       display: flex;
-      height: calc(100vh - 130px); /* Adjust height to account for header */
+      height: calc(100vh - 87px); /* Adjust height to account for header */
     }
     
     #sidebar {
@@ -44,6 +44,7 @@
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
       display: flex;
       flex-direction: column;
+      scrollbar-width: thin;
     }
     
     #sidebar h2 {
@@ -140,8 +141,7 @@
   top: 0;
   width: 100%; /* Full width */
   height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
 }
 
 /* Modal Content */
@@ -197,6 +197,233 @@
 .submit-button:hover {
   opacity: 0.8;
 }
+/* Container for aligning and styling */
+.search-container {
+  margin: 10px 20px 20px 0; /* Reduce top and bottom margins for smaller height */
+  width: 80%; /* Adjust the width as needed */
+  max-width: 400px; /* Limit the maximum width */
+}
+
+/* Heading */
+.search-heading {
+  display: block;
+  font-size: 15px; /* Slightly smaller font size for a compact look */
+  color: #ffffff; /* Darker color for better contrast */
+  margin-bottom: 15px; /* Reduce space below the heading */
+  font-weight: bold; /* Make the heading bold */
+}
+
+/* Input field */
+#search-input {
+  width: 100%; /* Full width within the container */
+  padding: 8px 16px; /* Reduce padding inside the input field for smaller height */
+  margin-bottom: 16px; /* Space below the input field */
+  border: 1px solid #ccc; /* Border color */
+  border-radius: 25px; /* Rounded corners for a circular look */
+  box-sizing: border-box; /* Ensure padding and border are included in width */
+  font-size: 16px; /* Maintain larger font size for better readability */
+  outline: none; /* Remove default outline */
+  transition: box-shadow 0.3s ease; /* Smooth transition for focus effect */
+}
+
+#search-input:focus {
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.85); /* Blue glow on focus */
+}
+
+/* Placeholder text */
+#search-input::placeholder {
+  color: #aaa; /* Lighter color for placeholder text */
+  font-style: italic; /* Italic style for placeholder text */
+}
+/* Explorer Container */
+.explorer-container {
+  margin: 20px 20px 20px 0; /* Adjust margins for positioning */
+  padding: 20px; /* Padding inside the container */
+  width: 105%; /* Wider width */
+  max-width: 600px; /* Limit the maximum width */
+  background-color: #3b3b3b; /* Light grey background color */
+  border: 1px #cccccc; /* Border color */
+  border-radius: 10px; /* Rounded corners for modern look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Explorer Heading */
+.explorer-heading {
+  font-size: 20px; /* Font size for the heading */
+  color: #ffffff; /* Text color */
+  margin-bottom: 15px; /* Space below the heading */
+  font-weight: bold; /* Bold text */
+  text-align: left; /* Align text to the left */
+}
+
+/* File List */
+.file-list {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+/* List Items */
+.file-list li {
+  margin-bottom: 10px; /* Space below each list item */
+}
+
+/* List Item Links */
+.file-list a {
+  text-decoration: none; /* Remove underline */
+  color: #007bff; /* Link color */
+  font-size: 16px; /* Font size for links */
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+.file-list a:hover {
+  color: #0056b3; /* Darker color on hover */
+}
+.file-list li .delete-form {
+    left: -20px; /* Move delete button 10px to the left */
+    top: 5px;
+}
+
+/* Add Button */
+.add-button {
+  display: flex; /* Flexbox for icon and text alignment */
+  align-items: center; /* Center align items */
+  justify-content: center; /* Center justify items */
+  background-color: #007bff; /* Blue button background color */
+  color: white; /* Button text color */
+  padding: 12px 20px; /* Padding inside the button */
+  border: none; /* Remove border */
+  border-radius: 25px; /* Rounded corners for circular look */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size for button text */
+  width: 100%; /* Full width within the container */
+  margin-top: 15px; /* Space above the button */
+  transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.add-button:hover {
+  background-color: #0056b3; /* Darker blue background on hover */
+}
+
+/* Add Icon */
+.add-icon {
+  margin-right: 10px; /* Space between icon and text */
+  width: 16px; /* Icon width */
+  height: 16px; /* Icon height */
+}
+
+/* Styled Button */
+.styled-button {
+  background-color: #007bff; /* Blue background color */
+  color: white; /* White text color */
+  padding: 10px 20px; /* Padding inside the button */
+  margin: 10px 5px; /* Margin around the button for spacing */
+  border: none; /* Remove border */
+  border-radius: 105px; /* Rounded corners for circular look */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size for button text */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition for hover effects */
+}
+
+.styled-button:hover {
+  background-color: #0056b3; /* Darker blue background on hover */
+  transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.styled-button:active {
+  transform: scale(0.95); /* Slightly shrink the button on active/click */
+}
+
+/* Modal Container */
+.modal-compose {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  backdrop-filter: blur(5px); /* Blur background */
+}
+
+/* Modal Content */
+.modal-compose-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 120%; /* Could be more or less, depending on screen size */
+  max-width: 700px; /* Max width */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+/* Close Button */
+.close-compose {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-compose:hover,
+.close-compose:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Textarea */
+.modal-textarea-compose {
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none; /* Disable resizing */
+  font-size: 16px;
+}
+
+/* Button */
+.modal-button-compose {
+  background-color: #064bc2; /* Green */
+  color: white;
+  padding: 15px 20px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal-button-compose:hover {
+  background-color: #064bc2;
+}
+
+.delete-form {
+    display: inline-block;
+    position: relative;
+    top: 8px; /* Adjust this value as needed */
+    left: 30px
+}
+
+.file-list li {
+    display: flex;
+    align-items: start;
+}
+
+.file-list li .delete-form {
+    margin-left: auto;
+}
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -207,18 +434,30 @@
 
 <div id="main-container">
   <div id="sidebar">
-    <h2>Explorer</h2>
-    <ul>
-      {% for file in user_files %}
-      <li><a href="{% url 'write_dockerfile_with_id' file.id %}">{{ file.purpose }}</a></li>
+    <div class="search-container">
+      <h2 class="search-heading">Search Dockerfile by Purpose</h2>
+      <input type="text" id="search-input" placeholder="Search...">
+    </div>
+    <div class="explorer-container">
+      <h2 class="explorer-heading">Explorer</h2>
+      <ul class="file-list">
+        {% for file in user_files %}
+        <li>
+          <img src="{% static 'assets/img/docker_logo.webp' %}" style="margin-top: 4px" alt="Add" class="add-icon">
+          <a href="{% url 'write_dockerfile_with_id' file.id %}">{{ file.purpose }}</a>
+          <form action="{% url 'delete_template_editor' file.id %}" method="POST" class="delete-form">
+              {% csrf_token %}
+              <input type="image" src="{% static 'assets/img/bin.png' %}" style="width: 22px; margin-top: -3px" alt="Submit">
+          </form>
+      </li>
       {% endfor %}
-    </ul>
-    <button id="add-dockerfile" class="add-button">
-      <img src="{% static 'assets/img/plus.png' %}" alt="Add">
-      Add new Dockerfile
-    </button>
-    <h2>Search</h2>
-    <input type="text" placeholder="Search...">
+
+      </ul>
+      <button id="add-dockerfile" class="add-button">
+        <img src="{% static 'assets/img/plus.png' %}" alt="Add" class="add-icon">
+        Add new Dockerfile
+      </button>
+    </div>
   </div>
   
   <div id="editor-container">
@@ -226,20 +465,31 @@
       {% if selected_file %}
         {{ selected_file.text }}
       {% else %}
-        <p>Welcome to the VS Code-like Text Editor!</p>
+        <p>Write, modify and test your own dockerfile!</p>
       {% endif %}
     </div>
     <div class="save-container">
       <img id="loading-image" src="{% static 'assets/img/loading.gif' %}" style="display: none; width: 15%; height: auto;  margin-right: 47%;">
       <form method="POST" onsubmit="return validateDockerfile();">
         {% csrf_token %}
-        <button type="submit" name="action" value="build" onclick="setAction('build')" ondblclick="">Build dockerfile</button>
-        <button type="submit" name="action" value="check" onclick="setAction('check')">Check syntax</button>
-        <button type="submit" name="action" value="save" onclick="setAction('save')">Save</button>
-        <button type="submit" id="push" name="action" value="push" onclick="setAction('push')">Push to dockerhub</button>
-      </form>
+        <button type="submit" name="action" value="build" class="styled-button" onclick="setAction('build')">Build Dockerfile</button>
+        <button type="submit" name="action" value="check" class="styled-button" onclick="setAction('check')">Check Syntax</button>
+        <button type="submit" name="action" value="save" class="styled-button" onclick="setAction('save')">Save</button>
+        <button type="submit" id="push" name="action" value="push" class="styled-button" onclick="setAction('push')">Push to DockerHub</button>
+        <button type="submit" id="convert-button">Convert to Docker Compose</button>
+      </form>      
       <div id="error-message" style="color: red;" lint-result="{{ lint_result.message }}"></div>
     </div>
+  </div>
+</div>
+
+
+<!-- Add a modal -->
+<div id="modal-compose" class="modal-compose">
+  <div class="modal-compose-content">
+    <span class="close-compose" id="close-modal-compose">&times;</span>
+    <textarea id="modal-textarea-compose" class="modal-textarea-compose"></textarea>
+    <button id="download-button" class="modal-button-compose">Download</button>
   </div>
 </div>
 
@@ -262,7 +512,7 @@
         <input type="password" id="docker_password" name="docker_password" placeholder="Docker Hub Password" style="width: 250px;">
     </div>
 </div>
-      <button type="submit" class="submit-button"><img src="{% static 'assets/img/dockerhub.png' %}" style="width: 45px; height: 45px;" alt="Submit"> Push to Docker Hub</button>
+      <button type="submit" id="submit-push" class="submit-button"><img src="{% static 'assets/img/dockerhub.png' %}" style="width: 45px; height: 45px;" alt="Submit"> Push to Docker Hub</button>
     </form>
     <img id="loading-image-push" src="{% static 'assets/img/loading.gif' %}" style="display: none; width: 30%; height: auto;margin: auto;">
     <p id="login-error" style="color: red; display: none; text-align: center;"></p>
@@ -275,43 +525,63 @@
 
 $(document).ready(function() {
     // Get the modal
-    var dockerLoginModal = $("#docker-push-modal");
+    var dockerPushModal = $("#docker-push-modal");
 
     // Get the button that opens the modal
-    var dockerLoginButton = $("#push");
+    var dockerPushButton = $("#push");
 
     // Get the <span> element that closes the modal
-    var dockerLoginClose = $(".close");
+    var dockerPushClose = $(".close");
 
     // When the user clicks the button, open the modal 
-    dockerLoginButton.on('click', function(event) {
+    dockerPushButton.on('click', function(event) {
         event.preventDefault(); // Prevent the form from being submitted
         $('#login-error').text('');
         $('#login-success').text('');
-        dockerLoginModal.show();
+        dockerPushModal.show();
+        
     });
 
     // When the user clicks on <span> (x), close the modal
-    dockerLoginClose.on('click', function() {
-        dockerLoginModal.hide();
+    dockerPushClose.on('click', function() {
+        dockerPushModal.hide();
     });
 
 
     // When the user clicks anywhere outside of the modal, close it
     $(window).on('click', function(event) {
-        if (event.target == dockerLoginModal[0]) {
-            dockerLoginModal.hide();
+        if (event.target == dockerPushModal[0]) {
+            dockerPushModal.hide();
         }
     });
 });
 
+document.getElementById('download-button').addEventListener('click', function() {
+    var modalContent = document.getElementById('modal-textarea-compose').textContent;
+    var blob = new Blob([modalContent], {type: 'text/plain'});
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'myfilename.txt';
+    link.click();
+});
 
 
+var checkboxesShown = false;
   var editor = ace.edit("editor");
   editor.setTheme("ace/theme/chaos"); // Set the editor theme
   editor.getSession().setMode("ace/mode/dockerfile");
   editor.setShowPrintMargin(false);
   editor.setOption("wrap", "free");
+
+
+  var closeButton = document.getElementById('close-modal-compose');
+
+// // // Add an event listener to the close button
+closeButton.addEventListener('click', function() {
+    // Get all checkboxes
+    
+});
 
   var action;
 
@@ -322,7 +592,10 @@ $(document).ready(function() {
   function validateDockerfile() {
       var editorContent = editor.getValue(); // Get content from Ace editor
       document.getElementById('file-content').value = editorContent;
-      $('#loading-image').show();
+      // $('#loading-image').show();
+      if(action == 'build' ||  action == 'check' || action == 'save') {
+        $('#loading-image').show();
+      }
 
       // Make an AJAX request to lint the Dockerfile
       $.ajax({
@@ -343,8 +616,12 @@ $(document).ready(function() {
               } else {
                   document.getElementById('error-message').innerText = data.message;
               }
-          }
-      });
+          },
+          error: function () {
+            console.log('AJAX request failed: ');  // Log a message when the AJAX request fails
+            $("#loading-image").hide();
+          
+  }});
 
       // Prevent the form from being submitted
       return false;
@@ -355,6 +632,8 @@ $(document).ready(function() {
   if (form) {
     form.addEventListener('submit', function(event) {
       event.preventDefault(); // Prevent the form from being submitted
+      $('#login-error').text('');
+      $('#login-success').text('');
       pushDockerfile(); // Call the pushDockerfile function
     });
   }
@@ -396,11 +675,102 @@ $(document).ready(function() {
       // Prevent the form from being submitted
       return false;
   }
+    // Attach a click event listener to the new button
+    $('#convert-button').on('click', function() {
+    console.log('convert-button clicked');  // Log a message when the button is clicked
+
+    if (!checkboxesShown) {
+        // If the checkboxes are not currently shown, show them and set the flag to true
+        $('.file-list li').each(function() {
+          var dockerfileName = $(this).text();  // Get the name of the Dockerfile
+          $(this).prepend('<input type="checkbox" class="dockerfile-checkbox" value="' + dockerfileName + '"> ');
+        });
+        checkboxesShown = true;
+    } else {
+
+    // Get the selected Dockerfiles
+    var selectedDockerfiles = [];  // Array to hold the purposes of the selected Dockerfiles
+$('.dockerfile-checkbox:checked').each(function() {
+    selectedDockerfiles.push($(this).data('purpose'));
+});
+
+
+    // Check if at least one Dockerfile is selected
+    if (selectedDockerfiles.length === 0) {
+        alert('Please select at least one Dockerfile.');
+        return false;
+    }
+
+    // Send the selected Dockerfiles to the server
+    $.ajax({
+        url: "{% url 'docker_compose' %}",  // The URL of your view function
+        type: 'POST',
+        data: {
+            'dockerfiles': JSON.stringify(selectedDockerfiles),
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        },
+        dataType: 'json',
+        
+        success: function (data) {
+            console.log('AJAX request successful');  // Log a message when the AJAX request is successful
+            $('#loading-image-push').hide();
+            // Update the error-message div with the lint result
+            if (data.error) {
+                // If there's an error, display the error message
+                $('#login-error').text('Invalid username or password').show();
+            } else {
+                // If there's no error, insert the data into the modal
+                $('#modal-textarea-compose').html(data.docker_compose_content);
+                // Show the modal
+                $('#modal-compose').show();
+            }
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log('AJAX request failed: ' + textStatus + ', ' + errorThrown);  // Log a message when the AJAX request fails
+        }
+    });
+    checkboxesShown = false;
+    }
+
+    // Prevent the form from being submitted
+    return false;
+});
+    // Attach a click event listener to the close button
+    $('#close-modal-compose').on('click', function() {
+        // Hide the modal
+        $('#modal-compose').hide();
+        $('input[type="checkbox"]').hide();
+
+    checkboxesShown = false;
+    });
 
   document.getElementById('add-dockerfile').addEventListener('click', function() {
   var editor = ace.edit("editor");
+  window.location.href = '/write_dockerfile/'; // Replace with your write_dockerfile URL
   editor.setValue("");
 });
+
+$('#search-input').on('keyup', function() {
+    // Get the current value of the search input field
+    var searchTerm = $(this).val().toLowerCase();
+
+    // Loop through all the list items
+    $('li').each(function() {
+        // Get the text of the link within the list item
+        var name = $(this).find('a').text().toLowerCase();
+
+        // Check if the name contains the search term
+        if (name.indexOf(searchTerm) > -1) {
+            // If it does, show the list item
+            $(this).show();
+        } else {
+            // If it doesn't, hide the list item
+            $(this).hide();
+        }
+    });
+});
+
 </script>
 
 

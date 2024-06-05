@@ -2,9 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
 
   <title>BizLand Bootstrap Template - Index</title>
   <meta content="" name="description">
@@ -15,19 +16,19 @@
   <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet"> -->
 
   <!-- Vendor CSS Files -->
-  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <!-- <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
   <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet"> -->
 
   <!-- Template Main CSS File -->
-  <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  <!-- <link href="{% static 'assets/css/style.css' %}" rel="stylesheet"> -->
 
   <!-- =======================================================
   * Template Name: BizLand
@@ -37,13 +38,23 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
   <style>
+
+* {
+    padding: 1px;
+    margin: 0px;
+}
+
+p {
+    padding: 1px;
+    margin: 10px;
+}
+
     body {
-        /* display: flex;
-        justify-content: flex-start;
-        background-color: #f0f0f0;
-        font-family: Arial, sans-serif; */
+      background-color: #004e93;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 304 304' width='304' height='304'%3E%3Cpath fill='%23007bd1' fill-opacity='0.15' d='M44.1 224a5 5 0 1 1 0 2H0v-2h44.1zm160 48a5 5 0 1 1 0 2H82v-2h122.1zm57.8-46a5 5 0 1 1 0-2H304v2h-42.1zm0 16a5 5 0 1 1 0-2H304v2h-42.1zm6.2-114a5 5 0 1 1 0 2h-86.2a5 5 0 1 1 0-2h86.2zm-256-48a5 5 0 1 1 0 2H0v-2h12.1zm185.8 34a5 5 0 1 1 0-2h86.2a5 5 0 1 1 0 2h-86.2zM258 12.1a5 5 0 1 1-2 0V0h2v12.1zm-64 208a5 5 0 1 1-2 0v-54.2a5 5 0 1 1 2 0v54.2zm48-198.2V80h62v2h-64V21.9a5 5 0 1 1 2 0zm16 16V64h46v2h-48V37.9a5 5 0 1 1 2 0zm-128 96V208h16v12.1a5 5 0 1 1-2 0V210h-16v-76.1a5 5 0 1 1 2 0zm-5.9-21.9a5 5 0 1 1 0 2H114v48H85.9a5 5 0 1 1 0-2H112v-48h12.1zm-6.2 130a5 5 0 1 1 0-2H176v-74.1a5 5 0 1 1 2 0V242h-60.1zm-16-64a5 5 0 1 1 0-2H114v48h10.1a5 5 0 1 1 0 2H112v-48h-10.1zM66 284.1a5 5 0 1 1-2 0V274H50v30h-2v-32h18v12.1zM236.1 176a5 5 0 1 1 0 2H226v94h48v32h-2v-30h-48v-98h12.1zm25.8-30a5 5 0 1 1 0-2H274v44.1a5 5 0 1 1-2 0V146h-10.1zm-64 96a5 5 0 1 1 0-2H208v-80h16v-14h-42.1a5 5 0 1 1 0-2H226v18h-16v80h-12.1zm86.2-210a5 5 0 1 1 0 2H272V0h2v32h10.1zM98 101.9V146H53.9a5 5 0 1 1 0-2H96v-42.1a5 5 0 1 1 2 0zM53.9 34a5 5 0 1 1 0-2H80V0h2v34H53.9zm60.1 3.9V66H82v64H69.9a5 5 0 1 1 0-2H80V64h32V37.9a5 5 0 1 1 2 0zM101.9 82a5 5 0 1 1 0-2H128V37.9a5 5 0 1 1 2 0V82h-28.1zm16-64a5 5 0 1 1 0-2H146v44.1a5 5 0 1 1-2 0V18h-26.1zm102.2 270a5 5 0 1 1 0 2H98v14h-2v-16h124.1zM242 149.9V160h16v34h-16v62h48v48h-2v-46h-48v-66h16v-30h-16v-12.1a5 5 0 1 1 2 0zM53.9 18a5 5 0 1 1 0-2H64V2H48V0h18v18H53.9zm112 32a5 5 0 1 1 0-2H192V0h50v2h-48v48h-28.1zm-48-48a5 5 0 0 1-9.8-2h2.07a3 3 0 1 0 5.66 0H178v34h-18V21.9a5 5 0 1 1 2 0V32h14V2h-58.1zm0 96a5 5 0 1 1 0-2H137l32-32h39V21.9a5 5 0 1 1 2 0V66h-40.17l-32 32H117.9zm28.1 90.1a5 5 0 1 1-2 0v-76.51L175.59 80H224V21.9a5 5 0 1 1 2 0V82h-49.59L146 112.41v75.69zm16 32a5 5 0 1 1-2 0v-99.51L184.59 96H300.1a5 5 0 0 1 3.9-3.9v2.07a3 3 0 0 0 0 5.66v2.07a5 5 0 0 1-3.9-3.9H185.41L162 121.41v98.69zm-144-64a5 5 0 1 1-2 0v-3.51l48-48V48h32V0h2v50H66v55.41l-48 48v2.69zM50 53.9v43.51l-48 48V208h26.1a5 5 0 1 1 0 2H0v-65.41l48-48V53.9a5 5 0 1 1 2 0zm-16 16V89.41l-34 34v-2.82l32-32V69.9a5 5 0 1 1 2 0zM12.1 32a5 5 0 1 1 0 2H9.41L0 43.41V40.6L8.59 32h3.51zm265.8 18a5 5 0 1 1 0-2h18.69l7.41-7.41v2.82L297.41 50H277.9zm-16 160a5 5 0 1 1 0-2H288v-71.41l16-16v2.82l-14 14V210h-28.1zm-208 32a5 5 0 1 1 0-2H64v-22.59L40.59 194H21.9a5 5 0 1 1 0-2H41.41L66 216.59V242H53.9zm150.2 14a5 5 0 1 1 0 2H96v-56.6L56.6 162H37.9a5 5 0 1 1 0-2h19.5L98 200.6V256h106.1zm-150.2 2a5 5 0 1 1 0-2H80v-46.59L48.59 178H21.9a5 5 0 1 1 0-2H49.41L82 208.59V258H53.9zM34 39.8v1.61L9.41 66H0v-2h8.59L32 40.59V0h2v39.8zM2 300.1a5 5 0 0 1 3.9 3.9H3.83A3 3 0 0 0 0 302.17V256h18v48h-2v-46H2v42.1zM34 241v63h-2v-62H0v-2h34v1zM17 18H0v-2h16V0h2v18h-1zm273-2h14v2h-16V0h2v16zm-32 273v15h-2v-14h-14v14h-2v-16h18v1zM0 92.1A5.02 5.02 0 0 1 6 97a5 5 0 0 1-6 4.9v-2.07a3 3 0 1 0 0-5.66V92.1zM80 272h2v32h-2v-32zm37.9 32h-2.07a3 3 0 0 0-5.66 0h-2.07a5 5 0 0 1 9.8 0zM5.9 0A5.02 5.02 0 0 1 0 5.9V3.83A3 3 0 0 0 3.83 0H5.9zm294.2 0h2.07A3 3 0 0 0 304 3.83V5.9a5 5 0 0 1-3.9-5.9zm3.9 300.1v2.07a3 3 0 0 0-1.83 1.83h-2.07a5 5 0 0 1 3.9-3.9zM97 100a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-48 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 96a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-144a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM49 36a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM33 68a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 240a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm80-176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm112 176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 180a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 84a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'%3E%3C/path%3E%3C/svg%3E");  
     }
 
+  
     form {
         max-width: 900px;
         margin: 0 auto;
@@ -59,11 +70,12 @@
     }
 
     .form-group input, .form-group select {
-        width: 100%;
+        width: 90%;
         padding: 10px;
         border-radius: 5px;
         border: 1px solid #ced4da;
         margin-top: 5px;
+        margin-left: 60px;
     }
 
     .form-group input[type="submit"] {
@@ -87,6 +99,29 @@
         bottom: 0;
         width: 100%;
     }
+
+    .tooltip .tooltip-inner {
+    background-color: #007bff; /* Change the background color to blue */
+    color: #FFFFFF; /* Change the text color to white */
+    font-size: 1.25em; /* Increase the font size */
+    padding: 10px; /* Increase the padding */
+}
+
+.form-group.row {
+      margin-bottom: 20px; /* spațiere între fiecare grup de câmpuri */
+    }
+    /* Stilizare pentru caseta text */
+    .form-control {
+      border-radius: 10px; /* colțuri rotunjite */
+      font-size: 14px; /* dimensiunea fontului */
+    }
+    /* Stilizare pentru etichetă */
+    .col-form-label {
+      font-size: 14px; /* dimensiunea fontului */
+      font-weight: bold; /* textul îngroșat */
+      left: 90px;
+    }
+
 </style>
 </head>
 <body>
@@ -119,149 +154,18 @@
         </div>
       </div>
 
-      <!-- LABEL -->
-      <div class="form-group row">
-        <label for="label" class="col-sm-4 col-form-label">Add metadata to the image:</label>
-        <div class="col-sm-8">
-          <input type="text" id="label" name="Label" class="form-control">
-        </div>
-      </div>
-
-      <!-- COPY -->
-      <div class="form-group row">
-        <label for="copy" class="col-sm-4 col-form-label">Copy the selected image:</label>
-        <div class="col-sm-8">
-          <input type="text" id="copy" name="copy" class="form-control">
-        </div>
-      </div>
-
-      <!-- ADD -->
-      <div class="form-group row">
-        <label for="add" class="col-sm-4 col-form-label">Add the selected image:</label>
-        <div class="col-sm-8">
-          <input type="text" id="add" name="add" class="form-control">
-        </div>
-      </div>
-
-      <!-- ARG -->
-      <div class="form-group row">
-        <label for="arg" class="col-sm-4 col-form-label">Arg:</label>
-        <div class="col-sm-8">
-          <input type="text" id="arg" name="arg" class="form-control">
-        </div>
-      </div>
-
-      <!-- CMD -->
-      <div class="form-group row">
-        <label for="cmd" class="col-sm-4 col-form-label">Cmd:</label>
-        <div class="col-sm-8">
-          <input type="text" id="cmd" name="cmd" class="form-control">
-        </div>
-      </div>
-
-      <!-- ENTRYPOINT -->
-      <div class="form-group row">
-        <label for="entrypoint" class="col-sm-4 col-form-label">Entrypoint:</label>
-        <div class="col-sm-8">
-          <input type="text" id="entrypoint" name="entrypoint" class="form-control">
-        </div>
-      </div>
-
-      <!-- ENV -->
-      <div class="form-group row">
-        <label for="env" class="col-sm-4 col-form-label">Env:</label>
-        <div class="col-sm-8">
-          <input type="text" id="env" name="env" class="form-control">
-        </div>
-      </div>
-
-      <!-- EXPOSE -->
-      <div class="form-group row">
-        <label for="expose" class="col-sm-4 col-form-label">Expose:</label>
-        <div class="col-sm-8">
-          <input type="text" id="expose" name="expose" class="form-control">
-        </div>
-      </div>
-
-      <!-- FROM -->
-      <div class="form-group row">
-        <label for="from" class="col-sm-4 col-form-label">From:</label>
-        <div class="col-sm-8">
-          <input type="text" id="from" name="from" class="form-control">
-        </div>
-      </div>
-
-      <!-- HEALTHCHECK -->
-      <div class="form-group row">
-        <label for="healthcheck" class="col-sm-4 col-form-label">Healthcheck:</label>
-        <div class="col-sm-8">
-          <input type="text" id="healthcheck" name="healthcheck" class="form-control">
-        </div>
-      </div>
-
-      <!-- MAINTAINER -->
-      <div class="form-group row">
-        <label for="maintainer" class="col-sm-4 col-form-label">Maintainer:</label>
-        <div class="col-sm-8">
-          <input type="text" id="maintainer" name="maintainer" class="form-control">
-        </div>
-      </div>
-
-      <!-- ONBUILD -->
-      <div class="form-group row">
-        <label for="onbuild" class="col-sm-4 col-form-label">Onbuild:</label>
-        <div class="col-sm-8">
-          <input type="text" id="onbuild" name="onbuild" class="form-control">
-        </div>
-      </div>
-
-      <!-- RUN -->
-      <div class="form-group row">
-        <label for="run" class="col-sm-4 col-form-label">Run:</label>
-        <div class="col-sm-8">
-          <input type="text" id="run" name="run" class="form-control">
-        </div>
-      </div>
-
-      <!-- SHELL -->
-      <div class="form-group row">
-        <label for="shell" class="col-sm-4 col-form-label">Shell:</label>
-        <div class="col-sm-8">
-          <input type="text" id="shell" name="shell" class="form-control">
-        </div>
-      </div>
-
-      <!-- STOPSIGNAL -->
-      <div class="form-group row">
-        <label for="stopsignal" class="col-sm-4 col-form-label">Stopsignal:</label>
-        <div class="col-sm-8">
-          <input type="text" id="stopsignal" name="stopsignal" class="form-control">
-        </div>
-      </div>
-
-      <!-- USER -->
-      <div class="form-group row">
-        <label for="user" class="col-sm-4 col-form-label">User:</label>
-        <div class="col-sm-8">
-          <input type="text" id="user" name="user" class="form-control">
-        </div>
-      </div>
-
-      <!-- VOLUME -->
-      <div class="form-group row">
-        <label for="volume" class="col-sm-4 col-form-label">Volume:</label>
-        <div class="col-sm-8">
-          <input type="text" id="volume" name="volume" class="form-control">
-        </div>
-      </div>
-
-      <!-- WORKDIR -->
-      <div class="form-group row">
-        <label for="workdir" class="col-sm-4 col-form-label">Workdir:</label>
-        <div class="col-sm-8">
-          <input type="text" id="workdir" name="workdir" class="form-control">
-        </div>
-      </div>
+      {% for instruction in instructions %}
+  <div class="form-group row" method="POST">
+    <!-- Afișarea numelui instrucțiunii și atașarea unui tooltip -->
+    <label for="{{ instruction.name }}" class="col-sm-2 col-form-label" data-toggle="tooltip" title="{{ instruction.summary_explanation }}">
+      {{ instruction.name }}:
+    </label>
+    <!-- Input pentru fiecare instrucțiune -->
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="{{ instruction.name }}" placeholder="{{ instruction.placeholder }}">
+    </div>
+  </div>
+  {% endfor %}
 
       <div class="form-group row">
         <div class="col-sm-3 text-center justify-content-center">
@@ -273,21 +177,24 @@
       <input type="hidden" id="action" name="action">
     </form>
 
-    <br>
-    <br>
-    <a href="{% url 'history' %}" style="color: #007bff;">History</a>
-  </div>
-    <br>
-    <br>
-    <a href="{% url 'history' %}">History</a>
 </body>
 </html>
 
 <!-- Add Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Load jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+<!-- Load Popper.js (required for Bootstrap tooltips) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Load Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
   function setAction(action) {
   //   if (action === 'submit') {
   //   var purpose = document.getElementById('purpose');
@@ -302,7 +209,7 @@
   }
   </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
 $(document).ready(function(){
   $("#purpose").on('input', function(){
@@ -329,7 +236,6 @@ $(document).ready(function(){
 });
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
   $('#purpose').on('input', function() {

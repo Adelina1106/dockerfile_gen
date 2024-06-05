@@ -8,8 +8,8 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from .utils import lint_dockerfile, search_docker_images, create_dockerfile
 from django.contrib.auth.decorators import login_required
-from .models import UserFileHistory
-from .models import ImageText
+from .models import Dockerfile_explanations
+from .models import ImageText, Dockerfile_instructions
 import os
 from django.conf import settings
 from django.views.decorators.cache import never_cache
@@ -127,9 +127,15 @@ def home(request):
             ImageText.objects.create(user=request.user,purpose = selected_image, text=formatted_template)
         elif action == 'search':
             images = search_docker_images(purpose)
-            return render(request, 'home.html', {'images': images})
+            return render(request, 'home.html', {'images': images, 'instructions': instructions})
 
-    return render(request, 'home.html')
+    instructions = Dockerfile_instructions.objects.all()
+    for instruction in instructions:
+        explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+        instruction.summary_explanation = explanation.summary_explanation
+    print(instructions)
+    return render(request, 'home.html', {'instructions': instructions})
+
 
 def get_all_images(request):
     query = request.GET.get('query', '')  # Get the 'query' parameter from the request, or '' if it doesn't exist
@@ -188,7 +194,9 @@ def modify_dockerfile(request, file_id=None):
             # If no file is selected, create a new file
                 print('File created')
                 selected_file = ImageText.objects.create(user=request.user, text=updated_content)
-            return HttpResponseRedirect(reverse('write_dockerfile_with_id', args=[selected_file.id]))
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'message': 'success', 'error': 'error'})
+            return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file})
         elif action == 'build':
             # Get the updated content from the form
             print('Build action')
@@ -200,16 +208,16 @@ def modify_dockerfile(request, file_id=None):
             # print(formatted_messages)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'message': formatted_messages, 'error': error_message})
-            if build_result:
-                print("here")
-                raw_messages = build_result.get('error', '')
-                formatted_messages = parse_and_format_server_messages(raw_messages)
-                build_message = '\n'.join(formatted_messages)
-                return render(request, 'write_dockerfile.html', {
-                    'user_files': user_files,
-                    'selected_file': selected_file,
-                    'lint_result': formatted_messages
-                })
+            # if build_result:
+            #     print("here")
+            #     raw_messages = build_result.get('error', '')
+            #     formatted_messages = parse_and_format_server_messages(raw_messages)
+            #     build_message = '\n'.join(formatted_messages)
+            #     return render(request, 'write_dockerfile.html', {
+            #         'user_files': user_files,
+            #         'selected_file': selected_file,
+            #         'lint_result': formatted_messages
+            #     })
                 # Handle the case where the Dockerfile is valid
         elif action == 'check':
             updated_content = request.POST.get('file-content')
@@ -252,6 +260,11 @@ def modify_dockerfile(request, file_id=None):
 def delete_template(request, image_text_id):
     ImageText.objects.get(id=image_text_id).delete()
     return redirect('history')
+
+@never_cache
+def delete_template_editor(request, image_text_id):
+    ImageText.objects.get(id=image_text_id).delete()
+    return redirect('write_dockerfile')
 
 @require_GET
 def search(request):
@@ -296,7 +309,9 @@ def dockerfile_push(request):
         except APIError:
             print("failure")
             return JsonResponse({'status': 'failure', 'error': 'Invalid username or password'})  # Return a JSON response for failure
-        
+        except Exception as e:
+            print("failure")
+            return JsonResponse({'status': 'failure', 'error': str(e)})       
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
@@ -315,6 +330,50 @@ def docker_login(request):
 
         else:
             return JsonResponse({'status': 'failure', 'error': 'Username and password are required'})
+        
+import yaml
 
+def convert_to_docker_compose(dockerfiles):
+    services = {}
     
+    for i, dockerfile in enumerate(dockerfiles):
+        service_name = f"service_{i+1}"
+        services[service_name] = {
+            "build": {
+                "context": ".",
+                "dockerfile": dockerfile
+            },
+            "container_name": service_name
+        }
+    
+    docker_compose = {
+        "version": "3",
+        "services": services
+    }
+    
+    return yaml.dump(docker_compose, default_flow_style=False)
+
+import json
+@csrf_exempt
+@login_required
+def docker_compose(request):
+    if request.method == 'POST':
+        print("am ajuns")
+        dockerfiles = json.loads(request.POST.get('dockerfiles'))
+        print(dockerfiles)
+        docker_compose_content = convert_to_docker_compose(dockerfiles)
+        print(docker_compose_content)
+
+        return JsonResponse({'docker_compose_content': docker_compose_content})
+
+@login_required
+def dockerfile_learn(request):
+    instructions = Dockerfile_instructions.objects.all()
+    for instruction in instructions:
+        explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+        instruction.summary_explanation = explanation.summary_explanation
+        instruction.explanation = explanation.explanation
+        instruction.options = explanation.options
+        instruction.examples = explanation.examples
+    return render(request, 'dockerfile_learn.html', {'instructions': instructions})
     

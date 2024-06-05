@@ -1,17 +1,13 @@
 {% load i18n static admin_material %}
 <!-- header.html -->
-<link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-<link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
-  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  
+
 <!-- Add other header elements here -->
 <header id="header" class="d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <h1 class="logo"><a href="index.html">Dockerfile Generator</a></h1>
+      <h1 class="logo"><img src="{% static 'assets/img/docker_logo.webp' %}" alt="Add" class="add-icon" style="height: 55px; width: 45px;"><a href="{% url 'landing' %}">Dockerfile Generator</a></h1>
       <!-- Uncomment below if you prefer to use an image logo -->
       <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
 
@@ -21,8 +17,8 @@
           <li><a class="nav-link scrollto {% if request.path == '/' %}active{% endif %}" href="#about">About</a></li>
           <li><a class="nav-link scrollto {% if request.path == '/write_dockerfile/' %}active{% endif %}" href="{% url 'write_dockerfile' %}">Write</a></li>
           <li><a class="nav-link scrollto {% if request.path == '/history/' %}active{% endif %}" href="{% url 'history' %}">History</a></li>
-          <li><a class="nav-link scrollto" href="#team">Team</a></li>
-          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
+          <li><a class="nav-link scrollto{% if request.path == '/dockerfile_learn/' %}active{% endif %}" href="#team">Team</a></li>
+          <li class="dropdown"><a href="{% url 'dockerfile_learn' %}"><span>Learn dockerfile</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a href="#">Drop Down 1</a></li>
               <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>

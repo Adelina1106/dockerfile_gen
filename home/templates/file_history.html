@@ -5,7 +5,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
   <title>File History</title>
 </head>
@@ -29,6 +28,7 @@
     <button type="button" class="btn btn-primary btn-sm ml-2" data-toggle="modal" data-target="#dockerfileModal{{dockerfile.id}}">
       See Dockerfile
     </button>
+    <button type="button" class="btn btn-primary btn-sm ml-2" id="download-button{{dockerfile.id}}">Download</button>
     <!-- Modal -->
     <div class="modal fade" id="dockerfileModal{{dockerfile.id}}" tabindex="-1" role="dialog" aria-labelledby="dockerfileModalLabel{{dockerfile.id}}" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -61,6 +61,23 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+{% for dockerfile in dockerfiles %}
+<script>
+document.getElementById('download-button{{dockerfile.id}}').addEventListener('click', function() {
+    var blob = new Blob([`{{ dockerfile.text|escapejs }}`], {type: 'text/plain'});
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'Dockerfile{{dockerfile.id}}.txt';
+    document.body.appendChild(link); // Append the link to the document
+    link.click();
+    document.body.removeChild(link); // Remove the link after triggering the download
+});
+</script>
+{% endfor %}
+
+
 
 <!-- <script>
   window.onload = function() {

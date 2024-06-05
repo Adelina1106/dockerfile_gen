@@ -15,4 +15,9 @@ class Migration(migrations.Migration):
             name='purpose',
             field=models.TextField(default='Default purpose'),
         ),
+        migrations.AddField(
+            model_name='imagetext',
+            name='name',
+            field=models.TextField(default='Default name'),
+        ),
     ]
