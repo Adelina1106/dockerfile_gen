@@ -1,4 +1,4 @@
-{% load i18n static admin_material %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,6 +45,9 @@
       display: flex;
       flex-direction: column;
       scrollbar-width: thin;
+      scrollbar-color: #555 #333;
+      overflow-y: auto;
+      height: 100%;
     }
     
     #sidebar h2 {
@@ -216,8 +219,8 @@
 /* Input field */
 #search-input {
   width: 100%; /* Full width within the container */
-  padding: 8px 16px; /* Reduce padding inside the input field for smaller height */
-  margin-bottom: 16px; /* Space below the input field */
+  padding: 5px 16px; /* Reduce padding inside the input field for smaller height */
+  margin-bottom: 10px; /* Space below the input field */
   border: 1px solid #ccc; /* Border color */
   border-radius: 25px; /* Rounded corners for a circular look */
   box-sizing: border-box; /* Ensure padding and border are included in width */
@@ -237,7 +240,7 @@
 }
 /* Explorer Container */
 .explorer-container {
-  margin: 20px 20px 20px 0; /* Adjust margins for positioning */
+  margin: 0px 20px 20px 0; /* Adjust margins for positioning */
   padding: 20px; /* Padding inside the container */
   width: 105%; /* Wider width */
   max-width: 600px; /* Limit the maximum width */
@@ -245,6 +248,8 @@
   border: 1px #cccccc; /* Border color */
   border-radius: 10px; /* Rounded corners for modern look */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  /* overflow-y: auto; */
+  height: 500px;
 }
 
 /* Explorer Heading */
@@ -280,7 +285,7 @@
   color: #0056b3; /* Darker color on hover */
 }
 .file-list li .delete-form {
-    left: -20px; /* Move delete button 10px to the left */
+    left: -10px; /* Move delete button 10px to the left */
     top: 5px;
 }
 
@@ -291,12 +296,12 @@
   justify-content: center; /* Center justify items */
   background-color: #007bff; /* Blue button background color */
   color: white; /* Button text color */
-  padding: 12px 20px; /* Padding inside the button */
+  padding: 7px; /* Padding inside the button */
   border: none; /* Remove border */
   border-radius: 25px; /* Rounded corners for circular look */
   cursor: pointer; /* Pointer cursor on hover */
   font-size: 16px; /* Font size for button text */
-  width: 100%; /* Full width within the container */
+  width: 90%; /* Full width within the container */
   margin-top: 15px; /* Space above the button */
   transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
@@ -438,8 +443,9 @@
       <h2 class="search-heading">Search Dockerfile by Purpose</h2>
       <input type="text" id="search-input" placeholder="Search...">
     </div>
+    <h2 class="explorer-heading">Explorer</h2>
     <div class="explorer-container">
-      <h2 class="explorer-heading">Explorer</h2>
+      <h4 class="explorer-heading" style="font-size: 16px;">My Dockerfiles</h4>
       <ul class="file-list">
         {% for file in user_files %}
         <li>
@@ -447,7 +453,7 @@
           <a href="{% url 'write_dockerfile_with_id' file.id %}">{{ file.purpose }}</a>
           <form action="{% url 'delete_template_editor' file.id %}" method="POST" class="delete-form">
               {% csrf_token %}
-              <input type="image" src="{% static 'assets/img/bin.png' %}" style="width: 22px; margin-top: -3px" alt="Submit">
+              <input type="image" src="{% static 'assets/img/bin.png' %}" style="width: 22px; margin-top: -3px; margin-left: 13px" alt="Submit">
           </form>
       </li>
       {% endfor %}
@@ -458,7 +464,21 @@
         Add new Dockerfile
       </button>
     </div>
+
+    <div class="templates-container">
+      <h2 class="explorer-heading">Templates</h2>
+      <ul class="file-list">
+        {% for template in templates %}
+        <li>
+          <img src="{% static 'assets/img/docker_logo.webp' %}" style="margin-top: 4px" alt="Add" class="add-icon">
+          <a href="{% url 'write_dockerfile_with_id' template.id %}">{{ template.template_name }}</a>
+      </li>
+      {% endfor %}
+  
+      </ul>
+    </div>
   </div>
+
   
   <div id="editor-container">
     <div id="editor">
@@ -616,12 +636,8 @@ closeButton.addEventListener('click', function() {
               } else {
                   document.getElementById('error-message').innerText = data.message;
               }
-          },
-          error: function () {
-            console.log('AJAX request failed: ');  // Log a message when the AJAX request fails
-            $("#loading-image").hide();
-          
-  }});
+            }
+          });
 
       // Prevent the form from being submitted
       return false;
@@ -689,14 +705,15 @@ closeButton.addEventListener('click', function() {
     } else {
 
     // Get the selected Dockerfiles
-    var selectedDockerfiles = [];  // Array to hold the purposes of the selected Dockerfiles
+    var selectedDockerfiles = [];  // Array pentru a stoca scopurile Dockerfile-urilor selectate
 $('.dockerfile-checkbox:checked').each(function() {
-    selectedDockerfiles.push($(this).data('purpose'));
+  var name = $(this).val().trim();
+    // Adaugă numele la array-ul de scopuri selectate
+    selectedDockerfiles.push(name);
+    console.log($(this).val());
 });
-
-
     // Check if at least one Dockerfile is selected
-    if (selectedDockerfiles.length === 0) {
+    if (selectedDockerfiles.length == 0) {
         alert('Please select at least one Dockerfile.');
         return false;
     }
@@ -712,6 +729,8 @@ $('.dockerfile-checkbox:checked').each(function() {
         dataType: 'json',
         
         success: function (data) {
+          selectedDockerfiles = [];
+          console.log(selectedDockerfiles);  // Log a message when the AJAX request is successful
             console.log('AJAX request successful');  // Log a message when the AJAX request is successful
             $('#loading-image-push').hide();
             // Update the error-message div with the lint result

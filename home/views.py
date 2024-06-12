@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from .utils import lint_dockerfile, search_docker_images, create_dockerfile
 from django.contrib.auth.decorators import login_required
 from .models import Dockerfile_explanations
-from .models import ImageText, Dockerfile_instructions
+from .models import ImageText, Dockerfile_instructions, Dockerfile_explanations, Dockerfile_templates
 import os
 from django.conf import settings
 from django.views.decorators.cache import never_cache
@@ -19,6 +19,7 @@ from django.urls import reverse
 from .utils import build_dockerfile, parse_and_format_server_messages
 import requests, docker
 from docker.errors import APIError
+from django.contrib.auth import logout
 # Create your views here.
 
 def landing(request):
@@ -26,6 +27,9 @@ def landing(request):
     # Page from the theme 
     return render(request, 'index.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('landing')
 
 @csrf_exempt
 def login_view(request):
@@ -56,7 +60,7 @@ def signup_view(request):
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
         user.save()
         login(request, user)
-        return HttpResponse('Account created successfully.')
+        return render(request, "my_login.html", {'message': 'Account created successfully. Please log in.'})
     else:
         # Render the sign-up form
         return render(request, 'my_signup.html')
@@ -95,6 +99,7 @@ def home(request):
             template_path = os.path.join(settings.BASE_DIR, 'home/', 'dockerfile_template.txt')
             with open(template_path, 'r') as f:
                 template = f.read()
+            
                 
             images = search_docker_images(purpose)
             # Format the template string with the user's data
@@ -121,21 +126,37 @@ def home(request):
 # )
             
             formatted_template = create_dockerfile(request)
+            print(request.POST.get('ADD'))
             
             # formatted_template = formatted_template.replace('\n', '<br>')
             # Create a new ImageText and save it to the database
             ImageText.objects.create(user=request.user,purpose = selected_image, text=formatted_template)
         elif action == 'search':
             images = search_docker_images(purpose)
+            print(purpose)
+            instructions = Dockerfile_instructions.objects.all()
+            for instruction in instructions:
+                explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+                instruction.summary_explanation = explanation.summary_explanation
+                instruction.example = explanation.examples.split(', ')[0]
+                print(instruction.example)
             return render(request, 'home.html', {'images': images, 'instructions': instructions})
-
+        else:
+            instructions = Dockerfile_instructions.objects.all()
+            for instruction in instructions:
+                explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+                instruction.summary_explanation = explanation.summary_explanation
+                instruction.example = explanation.examples.split(', ')[0]
+                print(instruction.example)
+            return render(request, 'home.html', {'instructions': instructions})
     instructions = Dockerfile_instructions.objects.all()
     for instruction in instructions:
         explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
         instruction.summary_explanation = explanation.summary_explanation
-    print(instructions)
+        instruction.example = explanation.examples.split(', ')[0]
+        print(instruction.example)
     return render(request, 'home.html', {'instructions': instructions})
-
+    
 
 def get_all_images(request):
     query = request.GET.get('query', '')  # Get the 'query' parameter from the request, or '' if it doesn't exist
@@ -178,6 +199,8 @@ def modify_dockerfile(request, file_id=None):
     # your code here...
     user_files = ImageText.objects.filter(user=request.user)
     selected_file = None
+    templates = Dockerfile_templates.objects.all()
+    print(templates)
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -195,8 +218,8 @@ def modify_dockerfile(request, file_id=None):
                 print('File created')
                 selected_file = ImageText.objects.create(user=request.user, text=updated_content)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'message': 'success', 'error': 'error'})
-            return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file})
+                return JsonResponse({'message': 'Dockerfile saved'})
+            return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
         elif action == 'build':
             # Get the updated content from the form
             print('Build action')
@@ -226,7 +249,7 @@ def modify_dockerfile(request, file_id=None):
                 return JsonResponse(lint_result)
             if lint_result:
                 build_message = str(lint_result.get('message', ''))  # Asigură-te că obții mesajul din rezultat
-                return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'lint_result': build_message})
+                return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'lint_result': build_message, 'templates': templates})
             # Handle the case where the Dockerfile is valid
         elif action == 'push':
             # Conectează-te la clientul Docker
@@ -253,8 +276,17 @@ def modify_dockerfile(request, file_id=None):
 
 
     if file_id:
+        if ImageText.objects.filter(id=file_id).exists():
+            selected_file = ImageText.objects.get(id=file_id)
+        else :
+            ImageText.objects.create(user=request.user, text=Dockerfile_templates.objects.get(id=file_id).text, id=file_id, purpose=Dockerfile_templates.objects.get(id=file_id).template_name)
         selected_file = ImageText.objects.get(id=file_id)
-    return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file})
+    # templates
+    else:
+        selected_file = None
+
+
+    return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
 
 @never_cache
 def delete_template(request, image_text_id):
@@ -294,14 +326,19 @@ def dockerfile_push(request):
             file.write(dockerfile_content)
         username = request.POST.get('docker_username')
         password = request.POST.get('docker_password')
+        print(username, password)
               
         try:
             client = docker.from_env()
+            print("client")
             client.login(username, password)
+            print("login")
             # Build and push the Docker image...
             # You'll need to replace 'path/to/dockerfile' and 'myusername/myimage' with your actual values
             image, build_logs = client.images.build(path=directory_file_path, tag=f'{username}/myimage', rm=True)
+            print("build_logs")
             push_logs = client.images.push(f'{username}/myimage', stream=True)
+            print("push_logs")
             for line in push_logs:
                 print(line)
             print("success")
@@ -373,7 +410,122 @@ def dockerfile_learn(request):
         explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
         instruction.summary_explanation = explanation.summary_explanation
         instruction.explanation = explanation.explanation
-        instruction.options = explanation.options
-        instruction.examples = explanation.examples
+        options = []
+        if explanation.options != 'No options available' and explanation.options != '-' and explanation.options.__contains__(':'):
+            option_lines = explanation.options.split('\n')
+            for option_line in option_lines:
+                option_split = option_line.split(':')
+                if len(option_split) > 1:
+                    options.append({'name': option_split[0], 'description': option_split[1]})
+        else :
+            option_lines = explanation.options.split('\n')
+            for option_line in option_lines:
+                    options.append({'name': option_line, 'description': ''})
+        instruction.options = options
+        instruction.examples = explanation.examples.split(', ')
     return render(request, 'dockerfile_learn.html', {'instructions': instructions})
     
+# views.py
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.models import User
+from django.conf import settings
+from django.shortcuts import redirect, render
+
+@csrf_exempt
+def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        user = request.POST.get('user')
+        user = User.objects.get(username=user)
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            # associated_users = User.objects.filter(email=data)
+            print(request.POST.get('email'))
+            # if associated_users.exists():
+                    # for user in associated_users:
+            subject = "Password Reset Requested"
+            email_template_name = "password_reset_email.txt"
+            c = {
+            "email": request.POST.get('email'),
+            'domain': request.META['HTTP_HOST'],
+            'site_name': 'Website',
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "user": user,
+            'token': default_token_generator.make_token(user),
+            'protocol': 'http',
+            }
+            email_content = render_to_string(email_template_name, c)
+            try:
+                print(request.POST.get('email'))
+                send_mail(subject, email_content, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect("password_reset_done_custom")
+    # password_reset_form = PasswordResetForm()
+    return render(request, 'custom_password_reset.html')
+
+
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.models import User
+def custom_password_reset(request, uidb64, token):
+    if request.method == 'GET':
+        return render(request, 'custom_password_reset.html', {'uidb64': uidb64, 'token': token})
+    elif request.method == 'POST':
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # Decodează uidb64 pentru a obține id-ul utilizatorului
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        # Verifică tokenul
+        if user is not None and default_token_generator.check_token(user, token):
+            # Verifică dacă parolele sunt la fel
+            if password1 == password2:
+                # Setează noua parolă și salvează
+                user.set_password(password1)
+                user.save()
+                # Opoțional: autentifică automat utilizatorul
+                # login(request, user)
+                return render(request, 'my_login.html', {'message': 'The password has been successfully reset.'})
+            else:
+                return render(request, 'custom_password_reset.html', {'uidb64': uidb64, 'token': token, 'error_message': 'Parolele nu se potrivesc.'})
+        else:
+            return render(request, 'custom_password_reset.html', {'uidb64': uidb64, 'token': token, 'error_message': 'Linkul de resetare a parolei este invalid.'})
+    else:
+        return render(request, 'error.html', {'message': 'Invalid request method'})
+
+def password_reset_done_custom(request):
+    return render(request, 'password_reset_done_custom.html')
+
+def force_text(s):
+    if isinstance(s, str):
+        return s
+    elif isinstance(s, bytes):
+        return s.decode('utf-8')
+    elif hasattr(s, '__unicode__'):
+        return str(s)
+    else:
+        return str(s)
+
+
+
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.shortcuts import redirect
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'custom_password_reset_confirm.html'
+
+    def get_success_url(self):
+        return '/my_custom_page/'  # Înlocuiește cu URL-ul paginii personalizate la care vrei să redirecționezi utilizatorul

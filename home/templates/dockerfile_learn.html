@@ -1,4 +1,4 @@
-{% load i18n static admin_material %}
+{% load i18n static  %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,13 +21,19 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 }
 
         .container h2{
-            color: white;
+            color: rgb(0, 0, 0);
         }
         .container h4{
-            color: rgb(178, 205, 229);
+            color: rgb(0, 48, 83);
         }
-        .container h6{
-            color: white;
+        .container h4.dark-mode{
+            color: rgb(92, 143, 184);
+        }
+        .container h7{
+            color: rgb(0, 0, 0);
+        }
+        .container h7.dark-mode{
+            color: rgb(255, 255, 255);
         }
         .container {
             width: 20%;
@@ -35,89 +41,244 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
             overflow: hidden;
         }
         .container p {
-            font-size: 1.2em;
-            color: aliceblue;
+            font-size: 1.1em;
+            color: rgb(8, 8, 8);
         }
+        .container p.dark-mode {
+            color: rgb(255, 255, 255);
+        }
+        /* .container inna */
         .content {
             padding: 20px;
-            background: #363838;
+            background: #f2f3f4df;
             border-radius: 10px;
             margin-top: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(27, 27, 27, 0.1);
         }
+
+        .content.dark-mode{
+            background: #252525;
+        }
+
+        .content li{
+            color: #000000;
+        }
+
+        .content li.dark-mode{
+            color: #ffffff;
+        }
+
         .content h3 {
-            color: #3ab3eb;
-            display:inline-flex;
+            color: #006bb2;
+            display: inline-flex;
             padding-left: 6px;
             padding-right: 6px;
             padding-top: 6px;
             padding-bottom: 5px;
             margin-bottom: 15px;
+            font-size: 33px;
         }
+        .content h3.dark-mode {
+            color: #6898ba;
+        }
+        
+
         .content pre {
-            background: #444849;
+            background: #ffffffda;
             padding: 15px;
             border-radius: 15px;
-            border: #505a60 1px solid;
+            border: #d9e0e3 1px solid;
             overflow-x: auto;
             margin-bottom: 20px;
+        }
+        .content pre.dark-mode {
+            background: #454343;
+            border: #2e2e2e 1px solid;
         }
         .content ul {
             margin-left: 20px;
         }
         .content code {
-            background: #444849;
+            background: #eff1f2da;
             padding: 2px 5px;
             border-radius: 4px;
-            color: white;
-                }
-        .content h5 {
-            margin-top: 30px;
-            color: #b5d5eb;
+            color: rgb(7, 7, 7);
         }
-        .custom-container{
-            background-color: #292a2c;
-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 304 304' width='304' height='304'%3E%3Cpath fill='%2360abda' fill-opacity='0.1' d='M44.1 224a5 5 0 1 1 0 2H0v-2h44.1zm160 48a5 5 0 1 1 0 2H82v-2h122.1zm57.8-46a5 5 0 1 1 0-2H304v2h-42.1zm0 16a5 5 0 1 1 0-2H304v2h-42.1zm6.2-114a5 5 0 1 1 0 2h-86.2a5 5 0 1 1 0-2h86.2zm-256-48a5 5 0 1 1 0 2H0v-2h12.1zm185.8 34a5 5 0 1 1 0-2h86.2a5 5 0 1 1 0 2h-86.2zM258 12.1a5 5 0 1 1-2 0V0h2v12.1zm-64 208a5 5 0 1 1-2 0v-54.2a5 5 0 1 1 2 0v54.2zm48-198.2V80h62v2h-64V21.9a5 5 0 1 1 2 0zm16 16V64h46v2h-48V37.9a5 5 0 1 1 2 0zm-128 96V208h16v12.1a5 5 0 1 1-2 0V210h-16v-76.1a5 5 0 1 1 2 0zm-5.9-21.9a5 5 0 1 1 0 2H114v48H85.9a5 5 0 1 1 0-2H112v-48h12.1zm-6.2 130a5 5 0 1 1 0-2H176v-74.1a5 5 0 1 1 2 0V242h-60.1zm-16-64a5 5 0 1 1 0-2H114v48h10.1a5 5 0 1 1 0 2H112v-48h-10.1zM66 284.1a5 5 0 1 1-2 0V274H50v30h-2v-32h18v12.1zM236.1 176a5 5 0 1 1 0 2H226v94h48v32h-2v-30h-48v-98h12.1zm25.8-30a5 5 0 1 1 0-2H274v44.1a5 5 0 1 1-2 0V146h-10.1zm-64 96a5 5 0 1 1 0-2H208v-80h16v-14h-42.1a5 5 0 1 1 0-2H226v18h-16v80h-12.1zm86.2-210a5 5 0 1 1 0 2H272V0h2v32h10.1zM98 101.9V146H53.9a5 5 0 1 1 0-2H96v-42.1a5 5 0 1 1 2 0zM53.9 34a5 5 0 1 1 0-2H80V0h2v34H53.9zm60.1 3.9V66H82v64H69.9a5 5 0 1 1 0-2H80V64h32V37.9a5 5 0 1 1 2 0zM101.9 82a5 5 0 1 1 0-2H128V37.9a5 5 0 1 1 2 0V82h-28.1zm16-64a5 5 0 1 1 0-2H146v44.1a5 5 0 1 1-2 0V18h-26.1zm102.2 270a5 5 0 1 1 0 2H98v14h-2v-16h124.1zM242 149.9V160h16v34h-16v62h48v48h-2v-46h-48v-66h16v-30h-16v-12.1a5 5 0 1 1 2 0zM53.9 18a5 5 0 1 1 0-2H64V2H48V0h18v18H53.9zm112 32a5 5 0 1 1 0-2H192V0h50v2h-48v48h-28.1zm-48-48a5 5 0 0 1-9.8-2h2.07a3 3 0 1 0 5.66 0H178v34h-18V21.9a5 5 0 1 1 2 0V32h14V2h-58.1zm0 96a5 5 0 1 1 0-2H137l32-32h39V21.9a5 5 0 1 1 2 0V66h-40.17l-32 32H117.9zm28.1 90.1a5 5 0 1 1-2 0v-76.51L175.59 80H224V21.9a5 5 0 1 1 2 0V82h-49.59L146 112.41v75.69zm16 32a5 5 0 1 1-2 0v-99.51L184.59 96H300.1a5 5 0 0 1 3.9-3.9v2.07a3 3 0 0 0 0 5.66v2.07a5 5 0 0 1-3.9-3.9H185.41L162 121.41v98.69zm-144-64a5 5 0 1 1-2 0v-3.51l48-48V48h32V0h2v50H66v55.41l-48 48v2.69zM50 53.9v43.51l-48 48V208h26.1a5 5 0 1 1 0 2H0v-65.41l48-48V53.9a5 5 0 1 1 2 0zm-16 16V89.41l-34 34v-2.82l32-32V69.9a5 5 0 1 1 2 0zM12.1 32a5 5 0 1 1 0 2H9.41L0 43.41V40.6L8.59 32h3.51zm265.8 18a5 5 0 1 1 0-2h18.69l7.41-7.41v2.82L297.41 50H277.9zm-16 160a5 5 0 1 1 0-2H288v-71.41l16-16v2.82l-14 14V210h-28.1zm-208 32a5 5 0 1 1 0-2H64v-22.59L40.59 194H21.9a5 5 0 1 1 0-2H41.41L66 216.59V242H53.9zm150.2 14a5 5 0 1 1 0 2H96v-56.6L56.6 162H37.9a5 5 0 1 1 0-2h19.5L98 200.6V256h106.1zm-150.2 2a5 5 0 1 1 0-2H80v-46.59L48.59 178H21.9a5 5 0 1 1 0-2H49.41L82 208.59V258H53.9zM34 39.8v1.61L9.41 66H0v-2h8.59L32 40.59V0h2v39.8zM2 300.1a5 5 0 0 1 3.9 3.9H3.83A3 3 0 0 0 0 302.17V256h18v48h-2v-46H2v42.1zM34 241v63h-2v-62H0v-2h34v1zM17 18H0v-2h16V0h2v18h-1zm273-2h14v2h-16V0h2v16zm-32 273v15h-2v-14h-14v14h-2v-16h18v1zM0 92.1A5.02 5.02 0 0 1 6 97a5 5 0 0 1-6 4.9v-2.07a3 3 0 1 0 0-5.66V92.1zM80 272h2v32h-2v-32zm37.9 32h-2.07a3 3 0 0 0-5.66 0h-2.07a5 5 0 0 1 9.8 0zM5.9 0A5.02 5.02 0 0 1 0 5.9V3.83A3 3 0 0 0 3.83 0H5.9zm294.2 0h2.07A3 3 0 0 0 304 3.83V5.9a5 5 0 0 1-3.9-5.9zm3.9 300.1v2.07a3 3 0 0 0-1.83 1.83h-2.07a5 5 0 0 1 3.9-3.9zM97 100a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-48 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 96a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-144a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM49 36a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM33 68a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 240a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm80-176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm112 176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 180a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 84a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'%3E%3C/path%3E%3C/svg%3E");
+        .content code.dark-mode {
+            background: #454343;
+            color: white;
         }
 
-        .nav-links {
+        .content h5 {
+            margin-top: 30px;
+            color: black;
+        }
+
+        .content h5.dark-mode{
+            color: white;
+        }
+
+        /* .custom-container{
+            background-image: url("{% static 'assets/img/background6.jpg' %}");
+            background-size: cover;
+            z-index: -1;
+        } */
+        .custom-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background-image: url("{% static 'assets/img/background6.jpg' %}"); */
+    background-color: #2e2d2d;
+    background-size:contain;
+    opacity: 0.85; /* Ajustează opacitatea aici */
+    z-index: -1;
+    pointer-events: none;
+}
+.custom-container {
+    position: relative;
+    z-index: 1;
+}
+
+.custom-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.988); /* Black overlay with 50% opacity */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 304 304' width='304' height='304'%3E%3Cpath fill='%23007bd1' fill-opacity='0.06' d='M44.1 224a5 5 0 1 1 0 2H0v-2h44.1zm160 48a5 5 0 1 1 0 2H82v-2h122.1zm57.8-46a5 5 0 1 1 0-2H304v2h-42.1zm0 16a5 5 0 1 1 0-2H304v2h-42.1zm6.2-114a5 5 0 1 1 0 2h-86.2a5 5 0 1 1 0-2h86.2zm-256-48a5 5 0 1 1 0 2H0v-2h12.1zm185.8 34a5 5 0 1 1 0-2h86.2a5 5 0 1 1 0 2h-86.2zM258 12.1a5 5 0 1 1-2 0V0h2v12.1zm-64 208a5 5 0 1 1-2 0v-54.2a5 5 0 1 1 2 0v54.2zm48-198.2V80h62v2h-64V21.9a5 5 0 1 1 2 0zm16 16V64h46v2h-48V37.9a5 5 0 1 1 2 0zm-128 96V208h16v12.1a5 5 0 1 1-2 0V210h-16v-76.1a5 5 0 1 1 2 0zm-5.9-21.9a5 5 0 1 1 0 2H114v48H85.9a5 5 0 1 1 0-2H112v-48h12.1zm-6.2 130a5 5 0 1 1 0-2H176v-74.1a5 5 0 1 1 2 0V242h-60.1zm-16-64a5 5 0 1 1 0-2H114v48h10.1a5 5 0 1 1 0 2H112v-48h-10.1zM66 284.1a5 5 0 1 1-2 0V274H50v30h-2v-32h18v12.1zM236.1 176a5 5 0 1 1 0 2H226v94h48v32h-2v-30h-48v-98h12.1zm25.8-30a5 5 0 1 1 0-2H274v44.1a5 5 0 1 1-2 0V146h-10.1zm-64 96a5 5 0 1 1 0-2H208v-80h16v-14h-42.1a5 5 0 1 1 0-2H226v18h-16v80h-12.1zm86.2-210a5 5 0 1 1 0 2H272V0h2v32h10.1zM98 101.9V146H53.9a5 5 0 1 1 0-2H96v-42.1a5 5 0 1 1 2 0zM53.9 34a5 5 0 1 1 0-2H80V0h2v34H53.9zm60.1 3.9V66H82v64H69.9a5 5 0 1 1 0-2H80V64h32V37.9a5 5 0 1 1 2 0zM101.9 82a5 5 0 1 1 0-2H128V37.9a5 5 0 1 1 2 0V82h-28.1zm16-64a5 5 0 1 1 0-2H146v44.1a5 5 0 1 1-2 0V18h-26.1zm102.2 270a5 5 0 1 1 0 2H98v14h-2v-16h124.1zM242 149.9V160h16v34h-16v62h48v48h-2v-46h-48v-66h16v-30h-16v-12.1a5 5 0 1 1 2 0zM53.9 18a5 5 0 1 1 0-2H64V2H48V0h18v18H53.9zm112 32a5 5 0 1 1 0-2H192V0h50v2h-48v48h-28.1zm-48-48a5 5 0 0 1-9.8-2h2.07a3 3 0 1 0 5.66 0H178v34h-18V21.9a5 5 0 1 1 2 0V32h14V2h-58.1zm0 96a5 5 0 1 1 0-2H137l32-32h39V21.9a5 5 0 1 1 2 0V66h-40.17l-32 32H117.9zm28.1 90.1a5 5 0 1 1-2 0v-76.51L175.59 80H224V21.9a5 5 0 1 1 2 0V82h-49.59L146 112.41v75.69zm16 32a5 5 0 1 1-2 0v-99.51L184.59 96H300.1a5 5 0 0 1 3.9-3.9v2.07a3 3 0 0 0 0 5.66v2.07a5 5 0 0 1-3.9-3.9H185.41L162 121.41v98.69zm-144-64a5 5 0 1 1-2 0v-3.51l48-48V48h32V0h2v50H66v55.41l-48 48v2.69zM50 53.9v43.51l-48 48V208h26.1a5 5 0 1 1 0 2H0v-65.41l48-48V53.9a5 5 0 1 1 2 0zm-16 16V89.41l-34 34v-2.82l32-32V69.9a5 5 0 1 1 2 0zM12.1 32a5 5 0 1 1 0 2H9.41L0 43.41V40.6L8.59 32h3.51zm265.8 18a5 5 0 1 1 0-2h18.69l7.41-7.41v2.82L297.41 50H277.9zm-16 160a5 5 0 1 1 0-2H288v-71.41l16-16v2.82l-14 14V210h-28.1zm-208 32a5 5 0 1 1 0-2H64v-22.59L40.59 194H21.9a5 5 0 1 1 0-2H41.41L66 216.59V242H53.9zm150.2 14a5 5 0 1 1 0 2H96v-56.6L56.6 162H37.9a5 5 0 1 1 0-2h19.5L98 200.6V256h106.1zm-150.2 2a5 5 0 1 1 0-2H80v-46.59L48.59 178H21.9a5 5 0 1 1 0-2H49.41L82 208.59V258H53.9zM34 39.8v1.61L9.41 66H0v-2h8.59L32 40.59V0h2v39.8zM2 300.1a5 5 0 0 1 3.9 3.9H3.83A3 3 0 0 0 0 302.17V256h18v48h-2v-46H2v42.1zM34 241v63h-2v-62H0v-2h34v1zM17 18H0v-2h16V0h2v18h-1zm273-2h14v2h-16V0h2v16zm-32 273v15h-2v-14h-14v14h-2v-16h18v1zM0 92.1A5.02 5.02 0 0 1 6 97a5 5 0 0 1-6 4.9v-2.07a3 3 0 1 0 0-5.66V92.1zM80 272h2v32h-2v-32zm37.9 32h-2.07a3 3 0 0 0-5.66 0h-2.07a5 5 0 0 1 9.8 0zM5.9 0A5.02 5.02 0 0 1 0 5.9V3.83A3 3 0 0 0 3.83 0H5.9zm294.2 0h2.07A3 3 0 0 0 304 3.83V5.9a5 5 0 0 1-3.9-5.9zm3.9 300.1v2.07a3 3 0 0 0-1.83 1.83h-2.07a5 5 0 0 1 3.9-3.9zM97 100a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-48 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 96a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-144a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm96 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM49 36a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-32 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM33 68a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 240a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm80-176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 48a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm112 176a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-16 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 180a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0-32a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 84a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm32 64a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm16-16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'%3E%3C/path%3E%3C/svg%3E");  
+    z-index: -1;
+}
+
+.custom-container.dark-mode::after {
+    background-color: rgba(15, 14, 14, 0.612); /* Black overlay with 50% opacity */
+}
+.nav-links {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between; /* Aliniem elementele pe întreaga linie */
-    width: 90%;
-    margin-left: 5%;
+    width: 98%;
+    margin-left: 2%;
+    background-color: #eff3f4b3;
+}
+
+.nav-links.dark-mode {
+    background-color: #252525;
 }
 
 .nav-links li {
+    flex: 1 1 10%; /* Fiecare element ocupă 10% din lățimea containerului */
     margin-bottom: 10px; /* Spațiu între rânduri */
     text-align: center; /* Centrăm textul comenzii */
-    min-width: 95px; /* Stabilim o lățime minimă pentru fiecare element */
-}
-
-/* Setăm flex-grow-ul pentru primele 10 elemente */
-.nav-links li:nth-child(-n+10) {
-    flex-grow: 1;
+    min-width: 110px; /* Stabilim o lățime minimă pentru fiecare element */
+    max-width: 170px; /* Stabilim o lățime maximă pentru fiecare element */
+    box-sizing: border-box; /* Asigurăm că padding-ul și marginile sunt incluse în lățime */
 }
 
 .nav-links li a {
-    color: white;
+    color: rgb(0, 0, 0) !important;
     text-decoration: none;
-    border-bottom: 1px solid #e6e9ec;
+    border: 0px solid #e6e9ec;
     transition: color 0.3s ease, border-bottom-color 0.3s ease, box-shadow 0.3s ease;
-    display: inline-block;
-    padding: 5px 10px;
+    display: block; /* Facem link-ul să ocupe toată lățimea elementului li */
+    padding: 10px 15px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.introduction {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #000000;
+    font-size: 18px;
+}
+
+.introduction.dark-mode{
+    color: #ffffff;
+}
+
+.nav-links li a.dark-mode{
+    color: #ffffff !important;
+    border-bottom-color: #81aad3;
 }
 
 .nav-links li a:hover {
-    color: #005bb5;
-    border-bottom-color: #005bb5;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(3, 127, 216, 0.447);
 }
+
+
+.theme-toggle-btn {
+            display: flex;
+            align-items: right;
+            justify-content: right;
+            position: relative;
+        }
+
+        .theme-toggle-btn input {
+            display: none;
+        }
+
+        .slider {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background-color: #025e97;
+            border-radius: 34px;
+            cursor: pointer;
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: white;
+            top: 3px;
+            left: 4px;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            margin: 0 1px;
+        }
+
+        .moon {
+            width: 30px;
+            height: 30px;
+
+        }
+
+.content h4{
+    color: black;
+}
+
+.content h4.dark-mode{
+    color: white;
+}
+
+.content h2{
+    color:hsl(from color h s l)
+}
+
+.content h2.dark-mode{
+    color: white;
+}
+
 
 
 
@@ -126,10 +287,20 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
 <body>
     {% include 'header.html' %}
 <div id="page" class="custom-container">
+    <label class="theme-toggle-btn">
+        <img src="{% static 'assets/img/sun.png' %}" alt="sun" class="icon">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+        <img src="{% static 'assets/img/moon.png' %}" alt="moon" class="icon">
+      </label>
+
     <div class="container"><br>
-        <h4>A dockerfile support the following instructions:</h4>
-        <h6>Click on an instruction to go to its explanation</h6>
-        <ul class="nav-links">
+        <div id="introduction" class="container introduction">
+            Docker can automatically build images by reading instructions from a Dockerfile. A Dockerfile is a text document containing all the instructions that a user could execute on the command line to assemble an image. This page provides descriptions of the commands you can utilize in a Dockerfile.
+        </div>    
+        <h4>A dockerfile supports the following instructions:</h4>
+        <h7>Click on an instruction to go to its explanation</h7>
+        <ul id="nav-links" class="nav-links">
             <!-- Introducerea codului Django pentru link-uri -->
             {% for instruction in instructions %}
                 <li><a href="#{{ instruction.name }}">{{ instruction.name }}</a></li>
@@ -138,14 +309,39 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
     </div>
 
 
-    <div class="container content">
+    <div id="content" class="container content">
         <h2>Instructions description</h2>
         {% for instruction in instructions %}
-        <h3 id="{{ instruction.name }}">{{ instruction.name }}</h3>
-        <p>The <code>{{ instruction.name }}</code> instruction {{ instruction.summary_explanation }}.</p>
-        <h5>Examples</h5>
-        <pre><code>{{ instruction.examples }}</code></pre>
+    <h3 id="{{ instruction.name }}">{{ instruction.name }}</h3>
+    <p>The <code>{{ instruction.name }}</code> instruction {{ instruction.summary_explanation }}.</p>
+    <h5>Examples</h5>
+    {% for example in instruction.examples %}
+        <pre><code>{{ example }}</code></pre>
+    {% endfor %}
+    <p>{{ instruction.explanation }}</p>
+    {% if instruction.options  %}
+    {% if instruction.options.0.name != '-' %}
+    <h5>{{ instruction.options.0.name }}</h5>
+    <ul>
+        {% for option in instruction.options %}
+            {% if forloop.counter > 1 %}
+                {% if option.description %}
+                <li><strong>{{ option.name }}</strong>: {{ option.description }}</li>
+                {% else %}
+                <li><strong>{{ option.name }}</strong></li>
+                {% endif %}
+            {% endif %}
         {% endfor %}
+    </ul>
+    {% endif %}
+    
+    {% endif %}
+{% endfor %}
+
+
+    
+
+
 
 
         <!-- <h2>FROM</h2>
@@ -187,4 +383,66 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
     </div>
 </div>
 </body>
+
+<script>
+// script.js
+
+document.querySelector('input[type="checkbox"]').addEventListener("change", function() {
+    var page = document.getElementById("page");
+    var content = document.getElementById("content");
+    var links = document.querySelectorAll(".nav-links li a");
+    var containerp = document.querySelectorAll(".container p");
+    var h3 = document.querySelectorAll(".content h3");
+    var h5 = document.querySelectorAll(".content h5");
+    var pre = document.querySelectorAll(".content pre");
+    var code = document.querySelectorAll(".content code");
+    var h4 = document.querySelectorAll(".content h4");
+    var h4c = document.querySelectorAll(".container h4");
+    var h7 = document.querySelectorAll(".container h7");
+    var h2 = document.querySelectorAll(".content h2");
+    var li = document.querySelectorAll(".content li");
+    var intr = document.getElementById("introduction");
+    var nav = document.getElementById("nav-links");
+
+console.log(h3); // Verificare în consolă
+nav.classList.toggle("dark-mode");
+page.classList.toggle("dark-mode");
+content.classList.toggle("dark-mode");
+links.forEach(function(link) {
+    link.classList.toggle("dark-mode");
+});
+containerp.forEach(function(p) {
+    p.classList.toggle("dark-mode");
+});
+h3.forEach(function(h) {
+    h.classList.toggle("dark-mode");
+});
+h5.forEach(function(h) {
+    h.classList.toggle("dark-mode");
+});
+pre.forEach(function(p) {
+    p.classList.toggle("dark-mode");
+});
+code.forEach(function(c) {
+    c.classList.toggle("dark-mode");
+});
+h4.forEach(function(h) {
+    h.classList.toggle("dark-mode");
+});
+h7.forEach(function(h) {
+    h.classList.toggle("dark-mode");
+});
+h2.forEach(function(h) {
+    h.classList.toggle("dark-mode");
+});
+h4c.forEach(function(h) {
+    h.classList.toggle("dark-mode");
+});
+intr.classList.toggle("dark-mode");
+
+li.forEach(function(l) {
+    l.classList.toggle("dark-mode");
+});
+});
+</script>
 </html>

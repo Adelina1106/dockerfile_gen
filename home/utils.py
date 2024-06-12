@@ -57,7 +57,7 @@ def create_dockerfile(request):
   if request.method == 'POST':
 
     instructions = Dockerfile_instructions.objects.values_list('name', flat=True)
-
+    print(instructions)
         # Map field names to placeholders
     fields = {instruction: instruction.upper() for instruction in instructions}
     # Map field names to placeholders
@@ -89,11 +89,17 @@ def create_dockerfile(request):
 
     # Replace each placeholder with the corresponding value or an empty string
     for field, placeholder in fields.items():
+      print(field)
       value = request.POST.get(field)
+      print(value)
       if value:
         dockerfile = dockerfile.replace('{' + placeholder + '}', placeholder + ' ' + value + '\n\n')
       else:
         dockerfile = dockerfile.replace('{' + placeholder + '}', '')
+
+    selected_file_text = 'FROM ' + request.POST.get('selected_image') +'\n'
+    dockerfile = selected_file_text + dockerfile
+    
 
     dockerfile = re.sub('\n\s*\n{2,}', '\n\n', dockerfile)
 

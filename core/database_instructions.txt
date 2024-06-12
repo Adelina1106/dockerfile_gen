@@ -1,0 +1,100 @@
+UPDATE home_dockerfile_explanations he
+JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+SET 
+    he.explanation = 'The ADD instruction in a Dockerfile performs the following actions:
+
+    It copies new files, directories, or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
+
+    Multiple <src> resources can be specified. If they are files or directories, their paths are interpreted as relative to the source of the build context.
+
+    Each <src> may contain wildcards, and matching is done using Go''s filepath.Match rules.',
+    
+    he.examples = 'ADD [OPTIONS] <src> ... <dest>, ADD hom* /mydir/, ADD hom?.txt /mydir/',
+    
+    he.options = 'Options: 
+    --keep-git-dir: --keep-git-dir=true flag lets you preserve the .git directory, 
+    --checksum: --checksum flag lets you verify the checksum of a remote resource, 
+    --chown: --chown flag specifies a given username, groupname, or UID/GID combination to request specific ownership of the copied content, 
+    --chmod: file permissions (--chmod=644), 
+    --link: source files are copied into an empty destination directory, 
+    --exclude: lets you specify a path expression for files to be excluded'
+WHERE hi.name LIKE 'ADD';
+
+
+UPDATE home_dockerfile_explanations he
+JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+SET
+    he.explanation = 'The FROM instruction in Docker establishes the base image for subsequent instructions. It''s mandatory for any valid Dockerfile and should precede all other instructions except ARG. You can use FROM multiple times in a Dockerfile to create multiple images or use one build stage as a dependency for another. Each new FROM instruction starts with a clean state, clearing any state created by previous instructions. Additionally, you have the option to name each new build stage by adding AS <name> to the FROM instruction. Tags or digest values are optional but recommended for specifying image versions; otherwise, Docker assumes the latest tag by default, returning an error if it can''t find the specified version.',
+    he.examples = 'FROM [--platform=<platform>] <image>[:<tag>] [AS <name>], FROM base:${CODE_VERSION}',
+    he.options = '-'
+WHERE hi.name LIKE 'FROM';
+
+The ARG instruction defines a variable that users can pass at build-time to the builder with the docker build command using the --build-arg <varname>=<value> flag. A Dockerfile may include one or more ARG instructions. An ARG variable definition comes into effect from the line on which it is defined in the Dockerfile not from the argument's use on the command-line or elsewhere. If an ARG instruction has a default value and if there is no value passed at build-time, the builder uses the default.
+
+
+UPDATE home_dockerfile_explanations he
+JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+SET
+    he.explanation = 'The ARG instruction in Docker allows users to define variables that can be passed at build-time using the --build-arg <varname>=<value> flag with the docker build command. Dockerfiles can contain one or more ARG instructions. Importantly, the definition of an ARG variable takes effect from the line it''s defined in the Dockerfile, not from where the argument is used in the command-line or elsewhere. If an ARG instruction includes a default value and no value is passed at build-time, the builder utilizes the default value.',
+    he.examples = 'ARG <name>[=<default value>], ARG user=my_user',
+    he.options = 'Predefined args
+HTTP_PROXY,
+http_proxy,
+HTTPS_PROXY,
+https_proxy,
+FTP_PROXY,
+ftp_proxy,
+NO_PROXY,
+no_proxy,
+ALL_PROXY,
+all_proxy'
+WHERE hi.name LIKE 'ARG';
+
+UPDATE home_dockerfile_explanations he
+JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+SET
+    he.explanation = 'The CMD instruction defines the command to execute when launching a container from an image. A Dockerfile can only have one CMD instruction. If you include multiple CMD instructions, only the last one will be applied. The CMD instruction serves to establish defaults for a running container. These defaults might involve specifying an executable or leaving it unspecified, in which case you must also include an ENTRYPOINT instruction.',
+    he.examples = 'CMD ["executable","param1","param2"], CMD ["param1","param2"], CMD command param1 param2',
+    he.options = '-'
+WHERE hi.name LIKE 'CMD';
+
+UPDATE home_dockerfile_explanations he
+JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+SET
+    he.explanation = 'The COPY instruction copies new files or directories from <src> and adds them to the filesystem of the container at the path <dest>. Multiple <src> resources may be specified but the paths of files and directories will be interpreted as relative to the source of the context of the build. Each <src> may contain wildcards and matching will be done using Go\'s filepath.Match rules.',
+    he.examples = 'COPY [OPTIONS] <src> ... <dest>, COPY [OPTIONS] ["<src>",... "<dest>"], COPY hom?.txt /mydir/',
+    he.options = 'Options
+    --from: lets you copy files from an image, a build stage, or a named context instead,\n--chown: specifies a given username, groupname, or UID/GID combination to request specific ownership of the copied content,\n--chmod: file permissions (--chmod=644),\n--link: source files are copied into an empty destination directory,\n--parents: preserves parent directories for src entries,\n--exclude: lets you specify a path expression for files to be excluded'
+WHERE hi.name LIKE 'COPY';
+
+
+UPDATE home_dockerfile_explanations he
+    JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+     SET
+     he.explanation = 'An ENTRYPOINT allows you to configure a container that will run as an executable. Command line arguments to docker run <image> will be appended after all elements in an exec form ENTRYPOINT, and will override all elements specified using CMD. Both CMD and ENTRYPOINT instructions define what command gets executed when running a container, with a few rules describing their cooperation. A Dockerfile should specify at least one of these commands, using ENTRYPOINT to define the container as an executable, while CMD is used to define default arguments for an ENTRYPOINT command or to execute an ad-hoc command in a container. CMD will be overridden when running the container with alternative arguments.',
+        he.examples = 'ENTRYPOINT ["executable","param1","param2"], ENTRYPOINT command param1 param2, ENTRYPOINT ["top","-b"], ENTRYPOINT ["/usr/sbin/apache2ctl","-D","FOREGROUND"]',
+         he.options = '-'
+     WHERE hi.name LIKE 'ENTRYPOINT';
+
+UPDATE home_dockerfile_explanations he
+JOIN home_dockerfile_instructions hi ON he.instruction_id = hi.id
+SET
+    he.explanation = 'The ENV instruction sets the environment variable <key> to the value <value>, making this value available for all subsequent instructions in the build stage and allowing it to be replaced inline in many instances. The value is interpreted for other environment variables, with unescaped quote characters being removed. Similar to command line parsing, quotes and backslashes can be used to include spaces within values. When a container is run from the resulting image, the environment variables set using ENV will persist. These values can be viewed with docker inspect and changed with docker run --env <key>=<value>.',
+    he.examples = 'ENV <key>=<value> ..., ENV MY_DOG=fluffy, ENV MY_NAME="John Doe" MY_CAT=Betty',
+    he.options = '-'
+WHERE hi.name LIKE 'ENV';
+
+UPDATE home_dockerfile_explanations AS he
+JOIN home_dockerfile_instructions AS hi ON he.instruction_id = hi.id
+SET
+    he.explanation = 'The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime. By default, EXPOSE assumes TCP.\n\nThe EXPOSE instruction doesn''t actually publish the port. It functions as a type of documentation between the person who builds the image and the person who runs the container, indicating which ports are intended to be published. To publish the port when running the container, use the -p flag on docker run to publish and map one or more ports, or the -P flag to publish all exposed ports and map them to high-order ports.\n\nRegardless of the EXPOSE settings, you can override them at runtime by using the -p flag.',
+    he.examples = 'EXPOSE <port> [<port>/<protocol>...], EXPOSE 80/udp',
+    he.options = '-'
+WHERE hi.name = 'EXPOSE';
+
+UPDATE home_dockerfile_templates 
+
+
+
+
+

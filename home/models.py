@@ -41,6 +41,12 @@ class Dockerfile_explanations(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     source = models.URLField(blank=True)
 
+class Dockerfile_templates(models.Model):
+    template_name = models.CharField(max_length=255)
+    template_purpose = models.TextField()
+    text = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
 
 
 # Create your models here.

@@ -48,7 +48,6 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_material.apps.AdminMaterialDashboardConfig',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,6 +57,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     "home",
     "core",
+    'material',
+    'material.admin',
 ]
 
 MIDDLEWARE = [
@@ -172,11 +173,22 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = '/login'
+# LOGIN_REDIRECT_URL = 'login'
+LOGIN_URL = '/login/please'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 print("DB_USERNAME:", DB_USERNAME)
 print("DB_PASS:", DB_PASS)
 print("DB_HOST:", DB_HOST)
 print("DB_PORT:", DB_PORT)
 print("DB_NAME:", DB_NAME)
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'dockerfile.generator@gmail.com'
+EMAIL_HOST_PASSWORD = 'hctbqebdybjzllbo'
+DEFAULT_FROM_EMAIL = 'dockerfile.generator@gmail.com'
+
+
 
