@@ -37,7 +37,7 @@ pipeline {
                 """
             }
         }
-        stages {
+       
         stage('Deploy') {
             steps {
                 script {
@@ -60,7 +60,6 @@ pipeline {
                 }
             }
         }
-    }
     }
     post {
         always {
