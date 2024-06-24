@@ -40,18 +40,18 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-            // Activate your virtual environment
-            sh ". ${VIRTUAL_ENV}/bin/activate"
-            
-            // Pull latest changes from Git (assuming your Jenkins workspace is already set to your project directory)
-            sh "git pull"
-            
-            // Install Python dependencies
-            sh "pip install -r requirements.txt"
-            
-            // Run your Django server
-            sh "python3 manage.py runserver"
-        }
+                    // Activate your virtual environment
+                    sh ". ${VIRTUAL_ENV}/bin/activate"
+                    
+                    // Pull latest changes from Git (assuming your Jenkins workspace is already set to your project directory)
+                    sh "git pull"
+                    
+                    // Install Python dependencies
+                    sh "pip install -r requirements.txt"
+                    
+                    // Run your Django server
+                    sh "python3 manage.py runserver"
+                }
             }
         }
     }
