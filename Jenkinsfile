@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     if (!fileExists("${VIRTUAL_ENV}")) {
-                        sh 'python3 -m venv venv'
+                        sh 'source env/bin/activate '
                     }
                 }
                 sh """
