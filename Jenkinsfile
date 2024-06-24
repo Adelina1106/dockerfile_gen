@@ -39,14 +39,19 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sshagent(['docker']) {
-                    sh """
-                    . ${VIRTUAL_ENV}/bin/activate
-                    # Add commands to deploy your application here
-                    # Example:
-                    ssh Adelina1106@loocalhost:8080 'cd / && git pull && source env/bin/activate && pip install -r requirements.txt && python3 manage.py runserver'
-                    """
-                }
+                script {
+            // Activate your virtual environment
+            sh ". ${VIRTUAL_ENV}/bin/activate"
+            
+            // Pull latest changes from Git (assuming your Jenkins workspace is already set to your project directory)
+            sh "git pull"
+            
+            // Install Python dependencies
+            sh "pip install -r requirements.txt"
+            
+            // Run your Django server
+            sh "python3 manage.py runserver"
+        }
             }
         }
     }
