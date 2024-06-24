@@ -1,5 +1,5 @@
 import requests, docker
-from .models import ImageText, Dockerfile_instructions
+from .models import Dockerfiles, Dockerfile_instructions
 import os, re
 import json
 from django.conf import settings
@@ -11,16 +11,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def search_docker_images(query):
-    response = requests.get(f'https://hub.docker.com/v2/search/repositories/?query={query}&page_size=10')
+def search_docker_images(purpose):
+    response = requests.get(f'https://hub.docker.com/v2/search/repositories/?query={purpose}&page_size=10')
     data = response.json()
-
-    # Extract the names of the first 5 images
-    image_names = [result['repo_name'] for result in data['results'][:5]]
+    image_names = [result['repo_name'] for result in data['results'][:5]] # Extract the names of the first 5 images
 
     images = []
     for image_name in image_names:
-        # Check if the image name contains a '/'
         if '/' in image_name:
             # Split the image name into namespace and image components
             namespace, image = image_name.split('/')
@@ -122,9 +119,10 @@ def lint_dockerfile(dockerfile_content):
     print(temp_file_path)
 
     try:
+        hadolint_path = os.path.join(settings.BASE_DIR, 'home/', 'hadolint.exe')
         # Run Hadolint on the temporary file
         result = subprocess.run(
-            ["/mnt/c/Users/Lenovo Yoga/Desktop/licenta/dockerfile_gen/hadolint.exe", temp_file_path],
+            [hadolint_path, temp_file_path],
             text=True,
             capture_output=True
         )
@@ -151,7 +149,6 @@ def build_dockerfile(dockerfile_content):
         # Build the Docker image defined by the Dockerfile
         image, build_logs = client.images.build(path=directory_file_path, tag='temp-image', rm=True)
         print(client.images.build(path=directory_file_path, tag='temp-image', rm=True))
-        print("ok")
         # Convert build logs to string
         build_output = '\n'.join([log.get('stream', '') for log in build_logs])
         

@@ -189,6 +189,7 @@ p {
             align-items: right;
             justify-content: right;
             position: relative;
+            margin-right: 0px;
         }
 
         .theme-toggle-btn input {
@@ -252,8 +253,23 @@ p {
 <div id="page" class="custom-container">
   <label class="theme-toggle-btn">
     <img src="{% static 'assets/img/sun.png' %}" alt="sun" class="icon">
+    <amp-img
+    alt="A view of the sea"
+    src="{% static 'assets/img/sun.png' %}"
+    width="900"
+    height="675"
+    layout="responsive"
+  >
+  </amp-img>
     <input type="checkbox" id="themeToggle">
     <span class="slider"></span>
+    <amp-img
+  alt="A view of the sea"
+  src="{% static 'assets/img/moon.png' %}"
+  width="900"
+  height="675"
+  layout="responsive">
+</amp-img>
     <img src="{% static 'assets/img/moon.png' %}" alt="moon" class="icon">
   </label>
   <div class="container container-form">

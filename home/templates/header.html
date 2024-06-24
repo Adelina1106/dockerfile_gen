@@ -2,7 +2,26 @@
 <!-- header.html -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   
+<style>
+.user-info {
+  display: flex;
+  align-items: right;
+}
 
+.user-info a {
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.user-info img {
+  margin-right: 0px;
+}
+.container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1340px;
+    }
+
+</style>
 <!-- Add other header elements here -->
 <header id="header" class="d-flex align-items-center">
     <div class="container d-flex align-items-center justify-content-between">
@@ -12,23 +31,26 @@
       <!-- <a href="index.html" class="logo"><img src="assets/img/logo.png" alt=""></a>-->
 
       <nav id="navbar" class="navbar">
-        <ul>
+        <ul class="nav-menu">
           <li><a class="nav-link scrollto {% if request.path == '' %}active{% endif %}" href="{% url 'landing' %}">Home</a></li>
-          <li><a class="nav-link scrollto {% if request.path == '/home/' %}active{% endif %}" href="{% url 'home' %}">Creation</a></li>
-          <li><a class="nav-link scrollto {% if request.path == '/write_dockerfile/' %}active{% endif %}" href="{% url 'write_dockerfile' %}">Write</a></li>
+          <li><a class="nav-link scrollto {% if request.path == '/home/' %}active{% endif %}" href="{% url 'home' %}">Generate Dockerfile</a></li>
+          <li><a class="nav-link scrollto {% if request.path == '/write_dockerfile/' %}active{% endif %}" href="{% url 'write_dockerfile' %}">Dockerfile tools</a></li>
           <li><a class="nav-link scrollto {% if request.path == '/history/' %}active{% endif %}" href="{% url 'history' %}">History</a></li>
-          <li class="dropdown"><a href="{% url 'dockerfile_learn' %}"><span>Learn dockerfile</span> <i class="bi bi-chevron-down"></i></a></li>
-          {% if user.is_authenticated %}
-            <li class="nav-item" style="left: 10%;">
-              <a class="nav-link" href="#">
-                <img src="{% static 'assets/img/user.png' %}" alt="User Image" style="width: 30px; height: 30px;">
-                {{ user.username }}   
-              </a>
-              <a class="nav-link" style="left: 20px; font-size: small;" href="{% url 'logout' %}">Logout</a>
-            </li>
-          {% endif %}
+          <li class="dropdown"><a href="{% url 'dockerfile_learn' %}"><span>Learn Dockerfile</span> <i class="bi bi-chevron-down"></i></a></li>
         </ul>
+        {% if user.is_authenticated %}
+          <div class="user-info">
+            <a class="user" href="#">
+              <img src="{% static 'assets/img/user.png' %}" alt="User Image" style="width: 23px; height: 23px;">
+              {{ user.username }}
+            </a>
+            <a class="nav-link" style="font-size: small;" href="{% url 'logout' %}">
+              <img src="{% static 'assets/img/logout.png' %}" alt="Logout Image" style="width: 15px; height: 15px;">Logout
+            </a>
+          </div>
+        {% endif %}
       </nav><!-- .navbar -->
-
+      
+      
     </div>
   </header><!-- End Header -->

@@ -108,51 +108,55 @@
 
 <div class="container">
 
-<form method="POST" action="{% url 'my_login' %}">
-  {% csrf_token %}
-  <h2>Login Form</h2>
-  <label for="uname"><b>Username</b></label>
-  <input type="text" placeholder="Enter Username" name="uname" required>
-  <br>
-  <br>
-  <label for="psw"><b>Password</b></label>
-  <input type="password" placeholder="Enter Password" name="psw" required>
-  <br>
-  <a href="#" data-toggle="modal" data-target="#forgotPasswordModal" style="font-size: 0.9em; text-align: center;">I forgot my password</a>
-  <br>
-  <p style="font-size: 0.8em; text-align: center;">Don't have an account? <a href="{% url 'signup_view' %}">Sign Up</a></p>
-  <br>
-  {% if message %}
-    <p style="color: greenyellow;">{{ message }}</p>
-  {% endif %}
-  <input type="submit" class="btn" value="Login">
-</form>
+  <form method="POST" action="{% url 'my_login' %}">
+    {% csrf_token %}
+    <h2>Login Form</h2>
+    <label for="uname"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="uname" required>
+    <br>
+    <br>
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw" required>
+    <br>
+    <a href="#" data-toggle="modal" data-target="#forgotPasswordModal" style="font-size: 0.9em; text-align: center;">Forgot password?</a>
+    <br>
+    <p style="font-size: 0.8em; text-align: center;">Don't have an account? <a href="{% url 'signup_view' %}">Sign Up</a></p>
+    <br>
+    {% if message %}
+      <p style="color: rgb(33, 146, 67);">{{ message }}</p>
+    {% endif %}
+    <input type="submit" class="btn" value="Login">
+  </form>
 
 <!-- HTML (in your provided template) -->
 <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form method="POST" action="{% url 'password_reset_request' %}">
-            {% csrf_token %}
-            <div class="form-group">
-              <label for="email">Email address</label>
-              <input type="user" class="form-control" name="user" id="user" aria-describedby="emailHelp" placeholder="Enter username" required>
-              <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
-              <small id="emailHelp" class="form-text text-muted">We'll send you a link to reset your password.</small>
-            </div>
-            <button type="submit" class="btn btn-primary">Send</button>
-          </form>
-        </div>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'password_reset_request' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="user"><b>Username</b></label>
+            <input type="text" class="form-control" name="user" id="user" aria-describedby="usernameHelp" placeholder="Enter username" required>
+          </div>
+          <div class="form-group">
+            <label for="email"><b>Email address</b></label>
+            <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email" required>
+            <small id="emailHelp" class="form-text text-muted">We'll send you a link to reset your password.</small>
+          </div>
+          <button type="submit" class="btn btn-primary">Send</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
+
   
 
 

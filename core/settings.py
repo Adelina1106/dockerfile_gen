@@ -174,7 +174,7 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # LOGIN_REDIRECT_URL = 'login'
-LOGIN_URL = '/login/please'
+LOGIN_URL = '/login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 print("DB_USERNAME:", DB_USERNAME)
 print("DB_PASS:", DB_PASS)

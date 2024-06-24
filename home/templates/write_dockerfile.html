@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VS Code-like Text Editor</title>
+  <title>Text Editor</title>
   
   <!-- External CSS for Fira Code font -->
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -99,13 +99,14 @@
     }
 
     .save-container button {
-      background-color: #007acc;
+      background-color: #0267aa;
+      margin-right: 7px;
       color: #fff;
       border: none;
-      padding: 10px 20px;
+      padding: 9px 16px;
       font-size: 14px;
       cursor: pointer;
-      border-radius: 3px;
+      border-radius: 20px;
     }
 
     .save-container button:hover {
@@ -188,7 +189,7 @@
 .submit-button {
   background-color: #006ebc;
   color: white;
-  padding: 14px 20px;
+  padding: 1px 3px;
   margin: 8px auto; /* Auto margins for horizontal centering */
   display: block; /* Make the button a block element to allow for centering */
   border: none;
@@ -210,6 +211,7 @@
 /* Heading */
 .search-heading {
   display: block;
+  width: 250px; /* Full width within the container */
   font-size: 15px; /* Slightly smaller font size for a compact look */
   color: #ffffff; /* Darker color for better contrast */
   margin-bottom: 15px; /* Reduce space below the heading */
@@ -317,18 +319,6 @@
   height: 16px; /* Icon height */
 }
 
-/* Styled Button */
-.styled-button {
-  background-color: #007bff; /* Blue background color */
-  color: white; /* White text color */
-  padding: 10px 20px; /* Padding inside the button */
-  margin: 10px 5px; /* Margin around the button for spacing */
-  border: none; /* Remove border */
-  border-radius: 105px; /* Rounded corners for circular look */
-  cursor: pointer; /* Pointer cursor on hover */
-  font-size: 16px; /* Font size for button text */
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition for hover effects */
-}
 
 .styled-button:hover {
   background-color: #0056b3; /* Darker blue background on hover */
@@ -397,7 +387,7 @@
 .modal-button-compose {
   background-color: #064bc2; /* Green */
   color: white;
-  padding: 15px 20px;
+  padding: 20px 20px;
   margin-top: 10px;
   border: none;
   border-radius: 5px;
@@ -425,6 +415,17 @@
     margin-left: auto;
 }
 
+#template_text {
+  width: 100%; /* Full width within the container */
+  padding: 5px 16px; /* Reduce padding inside the input field for smaller height */
+  margin-bottom: 10px; /* Space below the input field */
+  border: 1px solid #ccc; /* Border color */
+  border-radius: 25px; /* Rounded corners for a circular look */
+  box-sizing: border-box; /* Ensure padding and border are included in width */
+  font-size: 16px; /* Maintain larger font size for better readability */
+  outline: none; /* Remove default outline */
+  transition: box-shadow 0.3s ease; /* Smooth transition for focus effect */
+}
 
 
 
@@ -492,6 +493,13 @@
       <img id="loading-image" src="{% static 'assets/img/loading.gif' %}" style="display: none; width: 15%; height: auto;  margin-right: 47%;">
       <form method="POST" onsubmit="return validateDockerfile();">
         {% csrf_token %}
+        {% if user.is_superuser %}
+        <button type="text" name="action" value="new_template" class="styled-button" onclick="setAction('template')">Add new template</button>
+        <input type="text" name="template_text" id="template_name" placeholder="Template Name" style="height: 40px; width: 200px; margin-left: 10px; border-radius: 20px;">
+        <input type="text" name="template_text" id="template_purpose" placeholder="Template Purpose" style="height: 40px;width: 200px; margin-left: 10px; border-radius: 20px;">
+        <br>
+        <br>
+        {% endif %}
         <button type="submit" name="action" value="build" class="styled-button" onclick="setAction('build')">Build Dockerfile</button>
         <button type="submit" name="action" value="check" class="styled-button" onclick="setAction('check')">Check Syntax</button>
         <button type="submit" name="action" value="save" class="styled-button" onclick="setAction('save')">Save</button>
@@ -617,12 +625,14 @@ closeButton.addEventListener('click', function() {
         $('#loading-image').show();
       }
 
-      // Make an AJAX request to lint the Dockerfile
+      // Make an AJAX request
       $.ajax({
-          url: '',  // The URL of your view function
+          url: '',
           type: 'POST',
           data: {
               'file-content': editorContent,
+              'template_name': $('input[name=template_name]').val(),
+              'template_purpose': $('input[name=template_purpose]').val(),
               'docker_name': '{{ selected_file.purpose }}',
               'action': action,
               csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
@@ -769,6 +779,7 @@ $('.dockerfile-checkbox:checked').each(function() {
   window.location.href = '/write_dockerfile/'; // Replace with your write_dockerfile URL
   editor.setValue("");
 });
+
 
 $('#search-input').on('keyup', function() {
     // Get the current value of the search input field
