@@ -19,7 +19,12 @@ pipeline {
                     }
                 }
                 sh """
-                . ${VIRTUAL_ENV}/bin/activate
+                . env/bin/activate
+                # Install system dependencies
+                sudo apt-get update
+                sudo apt-get install -y libmysqlclient-dev  # For Debian/Ubuntu
+                # Adjust package name for other distributions as needed
+                
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 """
