@@ -20,15 +20,14 @@ pipeline {
                 }
                 sh """
                 . env/bin/activate
-                # Install system dependencies
-                sudo apt-get update
-                sudo apt-get install -y libmysqlclient-dev  # For Debian/Ubuntu
-                # Adjust package name for other distributions as needed
+                echo 'student' | sudo -S apt-get update
+                echo 'student' | sudo -S apt-get install -y libmysqlclient-dev
+                # Replace <your_sudo_password> with the actual password (not recommended for production use)
                 
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 """
-            }
+                    }
         }
         stage('Run Tests') {
             steps {
