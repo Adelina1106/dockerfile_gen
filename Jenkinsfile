@@ -37,23 +37,30 @@ pipeline {
                 """
             }
         }
+        stages {
         stage('Deploy') {
             steps {
                 script {
                     // Activate your virtual environment
                     sh ". ${VIRTUAL_ENV}/bin/activate"
                     
-                    // Pull latest changes from Git (assuming your Jenkins workspace is already set to your project directory)
-                    sh "git pull"
-                    
+                    // Pull latest changes from Git
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: 'main']],  // Specify the branch here
+                              doGenerateSubmoduleConfigurations: false,
+                              extensions: [],
+                              userRemoteConfigs: [[credentialsId: 'docker',
+                                                  url: 'git@github.com:Adelina1106/dockerfile_gen.git']]])
+
                     // Install Python dependencies
                     sh "pip install -r requirements.txt"
                     
-                    // Run your Django server
+                    // Run Django server
                     sh "python3 manage.py runserver"
                 }
             }
         }
+    }
     }
     post {
         always {
