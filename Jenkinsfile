@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                git 'https://github.com/Adelina1106/dockerfile_gen.git'
+                git 'git@github.com:Adelina1106/dockerfile_gen.git'
             }
         }
         stage('Setup Environment') {
@@ -38,7 +38,7 @@ pipeline {
                     source ${VIRTUAL_ENV}/bin/activate
                     # Add commands to deploy your application here
                     # Example:
-                    ssh user@server 'cd / && git pull && source env/bin/activate && pip install -r requirements.txt && python3 manage.py runserver'
+                    ssh Adelina1106@loocalhost:8080 'cd / && git pull && source env/bin/activate && pip install -r requirements.txt && python3 manage.py runserver'
                     """
                 }
             }
