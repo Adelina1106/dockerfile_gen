@@ -34,7 +34,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sshagent(['your-ssh-credentials-id']) {
+                sshagent(['docker']) {
                     sh """
                     source ${VIRTUAL_ENV}/bin/activate
                     # Add commands to deploy your application here
