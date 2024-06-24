@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                git 'git@github.com:Adelina1106/dockerfile_gen.git',
+                git url: 'git@github.com:Adelina1106/dockerfile_gen.git',
                 credentialsId: 'docker'
             }
         }
