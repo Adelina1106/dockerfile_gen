@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     if (!fileExists("${VIRTUAL_ENV}")) {
-                        sh 'source env/bin/activate '
+                        sh '. env/bin/activate '
                     }
                 }
                 sh """
