@@ -308,7 +308,8 @@ def modify_dockerfile(request, file_id=None):
         selected_file = Dockerfiles.objects.get(id=file_id)
     # templates
     else:
-        selected_file = None
+        Dockerfiles.objects.create(user=request.user, text=Dockerfile_templates.objects.get(id=file_id).text, id=file_id, purpose=Dockerfile_templates.objects.get(id=file_id).template_name)
+        selected_file = Dockerfiles.objects.get(id=file_id)
 
 
     return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
