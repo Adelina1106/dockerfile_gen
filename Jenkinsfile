@@ -32,7 +32,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh """
-                source ${VIRTUAL_ENV}/bin/activate
+                . ${VIRTUAL_ENV}/bin/activate
                 python manage.py test
                 """
             }
