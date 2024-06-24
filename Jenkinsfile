@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sshagent(['docker']) {
                     sh """
-                    source ${VIRTUAL_ENV}/bin/activate
+                    . ${VIRTUAL_ENV}/bin/activate
                     # Add commands to deploy your application here
                     # Example:
                     ssh Adelina1106@loocalhost:8080 'cd / && git pull && source env/bin/activate && pip install -r requirements.txt && python3 manage.py runserver'
