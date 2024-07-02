@@ -157,20 +157,20 @@ body {
           <div class="list-group-item dockerfile-item" data-purpose="{{ dockerfile.purpose }}">
             <h5 class="mb-1">Date: {{ dockerfile.timestamp|date:"Y-m-d" }}</h5>
             <p class="mb-1">Purpose: {{ dockerfile.purpose }}</p>
-            <form action="{% url 'delete_template' dockerfile.id %}" method="POST" style="display: inline-block;">
+            <form action="{% url 'delete_template' dockerfile.id_dockerfile %}" method="POST" style="display: inline-block;">
               {% csrf_token %}
               <input type="submit" value="Delete" style="background-color: #be1202; border-radius: 15px;" class="btn btn-danger btn-sm">
             </form>
-            <button type="button" class="btn btn-primary btn-sm ml-2" style="background-color: #064bc2; border-radius: 15px;" data-toggle="modal" data-target="#dockerfileModal{{dockerfile.id}}">
+            <button type="button" class="btn btn-primary btn-sm ml-2" style="background-color: #064bc2; border-radius: 15px;" data-toggle="modal" data-target="#dockerfileModal{{dockerfile.id_dockerfile}}">
               See Dockerfile
             </button>
-            <button type="button" class="btn btn-primary btn-sm ml-2" style="background-color: #064bc2; border-radius: 15px;" id="download-button{{dockerfile.id}}">Download</button>
+            <button type="button" class="btn btn-primary btn-sm ml-2" style="background-color: #064bc2; border-radius: 15px;" id="download-button{{dockerfile.id_dockerfile}}">Download</button>
             <!-- Modal -->
-            <div class="modal fade" id="dockerfileModal{{dockerfile.id}}" tabindex="-1" role="dialog" aria-labelledby="dockerfileModalLabel{{dockerfile.id}}" aria-hidden="true">
+            <div class="modal fade" id="dockerfileModal{{dockerfile.id_dockerfile}}" tabindex="-1" role="dialog" aria-labelledby="dockerfileModalLabel{{dockerfile.id_dockerfile}}" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="dockerfileModalLabel{{dockerfile.id}}">Dockerfile Content</h5>
+                    <h5 class="modal-title" id="dockerfileModalLabel{{dockerfile.id_dockerfile}}">Dockerfile Content</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
@@ -224,12 +224,12 @@ function searchDockerfiles() {
 }
 
 
-document.getElementById('download-button{{dockerfile.id}}').addEventListener('click', function() {
+document.getElementById('download-button{{dockerfile.id_dockerfile}}').addEventListener('click', function() {
     var blob = new Blob([`{{ dockerfile.text|escapejs }}`], {type: 'text/plain'});
     var url = URL.createObjectURL(blob);
     var link = document.createElement('a');
     link.href = url;
-    link.download = 'Dockerfile{{dockerfile.id}}.txt';
+    link.download = 'Dockerfile{{dockerfile.id_dockerfile}}.txt';
     document.body.appendChild(link); // Append the link to the document
     link.click();
     document.body.removeChild(link); // Remove the link after triggering the download

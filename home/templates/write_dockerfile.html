@@ -451,14 +451,14 @@
         {% for file in user_files %}
         <li>
           <img src="{% static 'assets/img/docker_logo.webp' %}" style="margin-top: 4px" alt="Add" class="add-icon">
-          <a href="{% url 'write_dockerfile_with_id' file.id %}">{{ file.purpose }}</a>
-          <form action="{% url 'delete_template_editor' file.id %}" method="POST" class="delete-form">
+          <a href="{% url 'write_dockerfile_with_id' file.id_dockerfile %}">{{ file.purpose }}</a>
+          <form action="{% url 'delete_template_editor' file.id_dockerfile %}" method="POST" class="delete-form">
               {% csrf_token %}
               <input type="image" src="{% static 'assets/img/bin.png' %}" style="width: 22px; margin-top: -3px; margin-left: 13px" alt="Submit">
           </form>
       </li>
       {% endfor %}
-
+      <div id="button-container"></div>
       </ul>
       <button id="add-dockerfile" class="add-button">
         <img src="{% static 'assets/img/plus.png' %}" alt="Add" class="add-icon">
@@ -472,7 +472,7 @@
         {% for template in templates %}
         <li>
           <img src="{% static 'assets/img/docker_logo.webp' %}" style="margin-top: 4px" alt="Add" class="add-icon">
-          <a href="{% url 'write_dockerfile_with_id' template.id %}">{{ template.template_name }}</a>
+          <a href="{% url 'write_dockerfile_with_id' template.id_template %}">{{ template.template_name }}</a>
       </li>
       {% endfor %}
   
@@ -701,10 +701,11 @@ closeButton.addEventListener('click', function() {
       // Prevent the form from being submitted
       return false;
   }
-    // Attach a click event listener to the new button
-    $('#convert-button').on('click', function() {
-    console.log('convert-button clicked');  // Log a message when the button is clicked
 
+  function convertFilesFunction() {
+    console.log('checkbox' + checkboxesShown);  
+    console.log('convert-button clicked');  // Log a message when the button is clicked
+    selectedDockerfiles = [];
     if (!checkboxesShown) {
         // If the checkboxes are not currently shown, show them and set the flag to true
         $('.file-list li').each(function() {
@@ -712,6 +713,27 @@ closeButton.addEventListener('click', function() {
           $(this).prepend('<input type="checkbox" class="dockerfile-checkbox" value="' + dockerfileName + '"> ');
         });
         checkboxesShown = true;
+
+        // ...
+
+    // Now, let's add a new button for converting files
+    const newButton = document.createElement('button');
+    newButton.id = 'new-convert-button'; // Assign an ID for styling or further JavaScript reference
+    newButton.textContent = 'Convert Files'; // Set the button text
+    newButton.className = 'btn btn-primary'; // Assuming you're using Bootstrap for styling
+
+    // Add an event listener for the new button's functionality
+    newButton.addEventListener('click', function() {
+        console.log('New Convert Files button clicked');
+        // Here you would add the logic for what happens when the new button is clicked
+    });
+    newButton.addEventListener('click', convertFilesFunction);
+    // Append the new button to the document, for example, appending it to the body
+    document.getElementById('button-container').appendChild(newButton);
+    selectedDockerfiles = []; 
+    console.log('BUTTON ID' + newButton.id);
+    return false;
+    
     } else {
 
     // Get the selected Dockerfiles
@@ -725,6 +747,7 @@ $('.dockerfile-checkbox:checked').each(function() {
     // Check if at least one Dockerfile is selected
     if (selectedDockerfiles.length == 0) {
         alert('Please select at least one Dockerfile.');
+        checkboxesShown = false;
         return false;
     }
 
@@ -760,18 +783,20 @@ $('.dockerfile-checkbox:checked').each(function() {
         }
     });
     checkboxesShown = false;
-    }
+    selectedDockerfiles = [];
+  }
 
     // Prevent the form from being submitted
     return false;
-});
-    // Attach a click event listener to the close button
-    $('#close-modal-compose').on('click', function() {
+}
+  $('#close-modal-compose').on('click', function() {
         // Hide the modal
         $('#modal-compose').hide();
-        $('input[type="checkbox"]').hide();
-
-    checkboxesShown = false;
+        $('input[type="checkbox"]').remove();  // Completely remove checkboxes instead of just hiding them
+    $('#new-convert-button').remove();
+        console.log('BUTTON CLOSED');  // Log a message when the button is clicked
+        checkboxesShown = false;
+        selectedDockerfiles = [];
     });
 
   document.getElementById('add-dockerfile').addEventListener('click', function() {
@@ -779,6 +804,92 @@ $('.dockerfile-checkbox:checked').each(function() {
   window.location.href = '/write_dockerfile/'; // Replace with your write_dockerfile URL
   editor.setValue("");
 });
+  document.getElementById('convert-button').addEventListener('click', convertFilesFunction);
+
+    // Attach a click event listener to the new button
+//     $('#convert-button').on('click', function() {
+//     console.log('convert-button clicked');  // Log a message when the button is clicked
+
+//     if (!checkboxesShown) {
+//         // If the checkboxes are not currently shown, show them and set the flag to true
+//         $('.file-list li').each(function() {
+//           var dockerfileName = $(this).text();  // Get the name of the Dockerfile
+//           $(this).prepend('<input type="checkbox" class="dockerfile-checkbox" value="' + dockerfileName + '"> ');
+//         });
+//         checkboxesShown = true;
+
+//         // ...
+
+//     // Now, let's add a new button for converting files
+//     const newButton = document.createElement('button');
+//     newButton.id = 'new-convert-button'; // Assign an ID for styling or further JavaScript reference
+//     newButton.textContent = 'Convert Files'; // Set the button text
+//     newButton.className = 'btn btn-primary'; // Assuming you're using Bootstrap for styling
+
+//     // Add an event listener for the new button's functionality
+//     newButton.addEventListener('click', function() {
+//         console.log('New Convert Files button clicked');
+//         // Here you would add the logic for what happens when the new button is clicked
+//     });
+
+//     // Append the new button to the document, for example, appending it to the body
+//     document.getElementById('button-container').appendChild(newButton);
+
+//     } else {
+
+//     // Get the selected Dockerfiles
+//     var selectedDockerfiles = [];  // Array pentru a stoca scopurile Dockerfile-urilor selectate
+// $('.dockerfile-checkbox:checked').each(function() {
+//   var name = $(this).val().trim();
+//     // Adaugă numele la array-ul de scopuri selectate
+//     selectedDockerfiles.push(name);
+//     console.log($(this).val());
+// });
+//     // Check if at least one Dockerfile is selected
+//     if (selectedDockerfiles.length == 0) {
+//         alert('Please select at least one Dockerfile.');
+//         return false;
+//     }
+
+//     // Send the selected Dockerfiles to the server
+//     $.ajax({
+//         url: "{% url 'docker_compose' %}",  // The URL of your view function
+//         type: 'POST',
+//         data: {
+//             'dockerfiles': JSON.stringify(selectedDockerfiles),
+//             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+//         },
+//         dataType: 'json',
+        
+//         success: function (data) {
+//           selectedDockerfiles = [];
+//           console.log(selectedDockerfiles);  // Log a message when the AJAX request is successful
+//             console.log('AJAX request successful');  // Log a message when the AJAX request is successful
+//             $('#loading-image-push').hide();
+//             // Update the error-message div with the lint result
+//             if (data.error) {
+//                 // If there's an error, display the error message
+//                 $('#login-error').text('Invalid username or password').show();
+//             } else {
+//                 // If there's no error, insert the data into the modal
+//                 $('#modal-textarea-compose').html(data.docker_compose_content);
+//                 // Show the modal
+//                 $('#modal-compose').show();
+//             }
+//         },
+
+//         error: function (jqXHR, textStatus, errorThrown) {
+//             console.log('AJAX request failed: ' + textStatus + ', ' + errorThrown);  // Log a message when the AJAX request fails
+//         }
+//     });
+//     checkboxesShown = false;
+//     }
+
+//     // Prevent the form from being submitted
+//     return false;
+// });
+    // Attach a click event listener to the close button
+
 
 
 $('#search-input').on('keyup', function() {

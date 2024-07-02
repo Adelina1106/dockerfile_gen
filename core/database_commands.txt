@@ -66,25 +66,25 @@ INSERT INTO home_dockerfile_instructions (name, type, type_env) VALUES
     ('WORKDIR', '2', '1');
 
 
-INSERT INTO home_dockerfile_explanations (instruction_id, explanation, summary_explanation, created_at, source) VALUES
-(1, '-', 'Add local or remote files and directories', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(2, '-', 'Create a new build stage from a base image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(3, '-', 'Use build-time variables', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(4, '-', 'Specify default commands', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(5, '-', 'Copy files and directories', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(6, '-', 'Specify default executable', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(7, '-', 'Set environment variables', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(8, '-', 'Describe which ports your application is listening on', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(9, '-', 'Check a container\'s health on startup', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(10, '-', 'Add metadata to an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(11, '-', 'Specify the author of an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(12, '-', 'Specify instructions for when the image is used in a build', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(13, '-', 'Execute build commands', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(14, '-', 'Set the default shell of an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(15, '-', 'Specify the system call signal for exiting a container', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(16, '-', 'Set user and group ID', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(17, '-', 'Create volume mounts', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/'),
-(18, '-', 'Change working directory', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/');
+INSERT INTO home_dockerfile_explanations (instruction_id, explanation, summary_explanation, created_at, source, examples, options) VALUES
+(1, '-', 'Add local or remote files and directories', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(2, '-', 'Create a new build stage from a base image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(3, '-', 'Use build-time variables', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(4, '-', 'Specify default commands', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(5, '-', 'Copy files and directories', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(6, '-', 'Specify default executable', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(7, '-', 'Set environment variables', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(8, '-', 'Describe which ports your application is listening on', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(9, '-', 'Check a container\'s health on startup', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(10, '-', 'Add metadata to an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(11, '-', 'Specify the author of an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(12, '-', 'Specify instructions for when the image is used in a build', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(13, '-', 'Execute build commands', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(14, '-', 'Set the default shell of an image', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(15, '-', 'Specify the system call signal for exiting a container', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(16, '-', 'Set user and group ID', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(17, '-', 'Create volume mounts', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-'),
+(18, '-', 'Change working directory', STR_TO_DATE('30.08.2024', '%d.%m.%Y'), 'https://docs.docker.com/reference/dockerfile/', '-', '-');
 
 hctb qebd ybjz llbo
 

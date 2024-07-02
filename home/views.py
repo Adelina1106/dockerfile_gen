@@ -63,6 +63,39 @@ def signup_view(request):
         email = request.POST['email']
         username = request.POST['uname']
         password = request.POST['psw']
+        password2 = request.POST['psw2']
+
+        if password != password2:
+            return render(request, 'my_signup.html', {'message': 'Passwords do not match.'})
+
+        if len(password) < 8:
+            return render(request, 'my_signup.html', {'message': 'password must be at least 8 characters long.'})
+        if not any(char.isdigit() for char in password):
+            return render(request, 'my_signup.html', {'message': 'password must contain at least one digit.'})
+        if not any(char.isalpha() for char in password):
+            return render(request, 'my_signup.html', {'message': 'password must contain at least one letter.'})
+        if not any(char.isSpecial() for char in password):
+            return render(request, 'my_signup.html', {'message': 'password must contain at least one special character.'})
+
+        if User.objects.filter(username=username).exists():
+            return render(request, 'my_signup.html', {'message': 'username is already taken.'})
+
+        if username.contains(' '):
+            return render(request, 'my_signup.html', {'message': 'username must not contain spaces.'})
+        
+        if not email.endswith(('@yahoo.com', '@gmail.com', '@hotmail.com')):
+            return render(request, 'my_signup.html', {'message': 'email must be a valid email address.'})
+
+        if User.objects.filter(email=email).exists():
+            return render(request, 'my_signup.html', {'message': 'email address is already registered.'})
+        
+        if not first_name.replace(' ', '').isalpha():
+            return render(request, 'my_signup.html', {'message': 'first name must contain only letters.'})
+        
+        if not last_name.replace(' ', '').isalpha():
+            return render(request, 'my_signup.html', {'message': 'last name must contain only letters.'})
+        
+        print("here")
         #user = User.objects.create_user(username, password, email, first_name=first_name, last_name=last_name)
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
         user.save()
@@ -71,6 +104,11 @@ def signup_view(request):
     else:
         # Render the sign-up form
         return render(request, 'my_signup.html')
+
+@login_required
+def my_profile(request):
+    return render(request, 'my_profile.html')
+
 
 @login_required
 def home(request):
@@ -143,7 +181,7 @@ def home(request):
             print(purpose)
             instructions = Dockerfile_instructions.objects.all()
             for instruction in instructions:
-                explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+                explanation = Dockerfile_explanations.objects.get(instruction=instruction.id_instruction)
                 instruction.summary_explanation = explanation.summary_explanation
                 instruction.example = explanation.examples.split(', ')[0]
                 print(instruction.example)
@@ -151,14 +189,14 @@ def home(request):
         else:
             instructions = Dockerfile_instructions.objects.all()
             for instruction in instructions:
-                explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+                explanation = Dockerfile_explanations.objects.get(instruction=instruction.id_instruction)
                 instruction.summary_explanation = explanation.summary_explanation
                 instruction.example = explanation.examples.split(', ')[0]
                 print(instruction.example)
             return render(request, 'home.html', {'instructions': instructions})
     instructions = Dockerfile_instructions.objects.all()
     for instruction in instructions:
-        explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+        explanation = Dockerfile_explanations.objects.get(instruction=instruction.id_instruction)
         instruction.summary_explanation = explanation.summary_explanation
         instruction.example = explanation.examples.split(', ')[0]
         print(instruction.example)
@@ -301,27 +339,26 @@ def modify_dockerfile(request, file_id=None):
 
 
     if file_id:
-        if Dockerfiles.objects.filter(id=file_id).exists():
-            selected_file = Dockerfiles.objects.get(id=file_id)
+        if Dockerfiles.objects.filter(id_dockerfile=file_id).exists():
+            selected_file = Dockerfiles.objects.get(id_dockerfile=file_id)
         else :
-            Dockerfiles.objects.create(user=request.user, text=Dockerfile_templates.objects.get(id=file_id).text, id=file_id, purpose=Dockerfile_templates.objects.get(id=file_id).template_name)
-        selected_file = Dockerfiles.objects.get(id=file_id)
+            Dockerfiles.objects.create(user=request.user, text=Dockerfile_templates.objects.get(id_dockerfile=file_id).text, id_dockerfile=file_id, purpose=Dockerfile_templates.objects.get(id_dockerfile=file_id).template_name)
+        selected_file = Dockerfiles.objects.get(id_dockerfile=file_id)
     # templates
     else:
-        Dockerfiles.objects.create(user=request.user, text=Dockerfile_templates.objects.get(id=file_id).text, id=file_id, purpose=Dockerfile_templates.objects.get(id=file_id).template_name)
-        selected_file = Dockerfiles.objects.get(id=file_id)
+        selected_file = None
 
 
     return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
 
 @never_cache
 def delete_template(request, image_text_id):
-    Dockerfiles.objects.get(id=image_text_id).delete()
+    Dockerfiles.objects.get(id_dockerfile=image_text_id).delete()
     return redirect('history')
 
 @never_cache
 def delete_template_editor(request, image_text_id):
-    Dockerfiles.objects.get(id=image_text_id).delete()
+    Dockerfiles.objects.get(id_dockerfile=image_text_id).delete()
     return redirect('write_dockerfile')
 
 @require_GET
@@ -332,7 +369,7 @@ def search(request):
 
 def open_file(request, file_id):
     # Fetch the file
-    file = Dockerfiles.objects.get(id=file_id)
+    file = Dockerfiles.objects.get(id_dockerfile=file_id)
     # Open the file in the editor
     # ...
     return render(request, 'open_file.html', {'file': file})
@@ -434,7 +471,7 @@ def docker_compose(request):
 def dockerfile_learn(request):
     instructions = Dockerfile_instructions.objects.all()
     for instruction in instructions:
-        explanation = Dockerfile_explanations.objects.get(instruction=instruction.id)
+        explanation = Dockerfile_explanations.objects.get(instruction_id=instruction.id_instruction)
         instruction.summary_explanation = explanation.summary_explanation
         instruction.explanation = explanation.explanation
         options = []

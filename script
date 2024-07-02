@@ -1,0 +1,16 @@
+FILES=(
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/__init__.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/migration.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/operations/__init__.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/operations/models.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/operations/base.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/operations/special.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/state.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/utils.py'
+    'https://raw.githubusercontent.com/django/django/main/django/db/migrations/exceptions.py'
+)
+
+for file_url in "${FILES[@]}"
+do
+    wget "$file_url" -P /mnt/c/Users/Lenovo\ Yoga/Desktop/licenta/dockerfile_gen/env/lib/python3.8/site-packages/django/db/migrations/
+done

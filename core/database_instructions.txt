@@ -95,6 +95,37 @@ WHERE hi.name = 'EXPOSE';
 UPDATE home_dockerfile_templates 
 
 
+HEALTHCHECK -> 2, 2
+explanation: The HEALTHCHECK instruction has two forms: HEALTHCHECK [OPTIONS] CMD command (check container health by running a command inside the container)
+and HEALTHCHECK NONE (disable any healthcheck inherited from the base image).The HEALTHCHECK instruction tells Docker how to test a container to check that it's still working. This can detect cases such as a web server stuck in an infinite loop and unable to handle new connections, even though the server process is still running.
+
+examples: HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+
+options: The options that can appear before CMD are
+--interval=DURATION (default: 30s)
+--timeout=DURATION (default: 30s)
+--start-period=DURATION (default: 0s)
+--start-interval=DURATION (default: 5s)
+--retries=N (default: 3)
+
+
+LABEL:
+
+explanation: The LABEL instruction adds metadata to an image. A LABEL is a key-value pair. To include spaces within a LABEL value, use quotes and backslashes as you would in command-line parsing. An image can have more than one label. You can specify multiple labels on a single line. Labels included in base or parent images (images in the FROM line) are inherited by your image.
+
+examples: LABEL com.example.label-with-value="foo", LABEL version="2.0" ,LABEL multi.label1="value1" multi.label2="value2" other="value3", 
+
+options: -
 
 
 
+MAINTAINER:
+
+explanation: The MAINTAINER instruction sets the Author field of the generated images. However, the LABEL instruction is a much more flexible alternative. It allows you to set any metadata you require and can be easily viewed, for example, using docker inspect.
+
+To set a label corresponding to the MAINTAINER field, you could use: LABEL org.opencontainers.image.authors="SvenDowideit@home.org.au"
+
+example: MAINTAINER <name>
+
+options: -

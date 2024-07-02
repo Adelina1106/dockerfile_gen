@@ -40,7 +40,7 @@
         </ul>
         {% if user.is_authenticated %}
           <div class="user-info">
-            <a class="user" href="#">
+            <a class="user" href="{% url 'my_profile' %}">
               <img src="{% static 'assets/img/user.png' %}" alt="User Image" style="width: 23px; height: 23px;">
               {{ user.username }}
             </a>

@@ -7,13 +7,14 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
   <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
 
-  <title>BizLand Bootstrap Template - Index</title>
+  <title>Generate Dockerfile</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
   <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
   <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <script src="{% static '/assets/js/validator.js' %}"></script>
 
   <!-- Google Fonts -->
   <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -245,6 +246,12 @@ p {
   background-color: #313336;
 }
 
+.error-message {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
 </style>
 </head>
 <body>
@@ -309,19 +316,20 @@ p {
       </div>
 
       {% for instruction in instructions %}
+      {% if instruction.name != "FROM" %}
       <div class="form-group row">
-        <!-- Afișarea numelui instrucțiunii și atașarea unui tooltip -->
-        {% if instruction.name != "FROM" %}
-        <label for="{{ instruction.name }}" class="col-sm-2 col-form-label" data-toggle="tooltip" title="{{ instruction.summary_explanation }}">
-          {{ instruction.name }}:
-        </label>
-        <!-- Input pentru fiecare instrucțiune -->
-        <div class="col-sm-10  custom-input-box" style="color: #343131;">
-          <input type="text" class="form-control" style="color: #000000;" id="{{ instruction.name }}" name="{{ instruction.name }}" placeholder="{{ instruction.example }}">
-        </div>
-        {% endif %}
+          <label for="{{ instruction.name }}" class="col-sm-2 col-form-label" data-toggle="tooltip" title="{{ instruction.summary_explanation }}">
+              {{ instruction.name }}:
+          </label>
+          <div class="col-sm-10 custom-input-box">
+              <input type="text" class="form-control" id="{{ instruction.name }}" name="{{ instruction.name }}" placeholder="{{ instruction.example }}">
+              <div id="{{ instruction.name }}Error" class="error-message"></div>
+          </div>
       </div>
-    {% endfor %}
+      {% endif %}
+  {% endfor %}
+  
+
 
       <div class="form-group row">
         <div class="col-sm-3 text-center justify-content-center">
@@ -334,6 +342,118 @@ p {
     </form>
 </div>
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var instructions = [
+        "RUN",
+        "COPY",
+        "ADD",
+        "EXPOSE",
+        "CMD",
+        "LABEL",
+        "MAINTAINER",
+        "ENV",
+        "ENTRYPOINT",
+        "VOLUME",
+        "USER",
+        "WORKDIR",
+        "ARG",
+        "ONBUILD",
+        "STOPSIGNAL",
+        "HEALTHCHECK",
+        "SHELL"
+        // Add other instructions as needed
+    ];
+
+    instructions.forEach(function(instructionName) {
+        var input = document.getElementById(instructionName);
+        var errorDiv = document.getElementById(instructionName + 'Error');
+
+        if (input) {
+            input.addEventListener('input', function() {
+                var value = input.value.trim();
+
+                if (!validateInput(instructionName, value)) {
+                    errorDiv.innerText = 'The input may be incorrect for the instruction ' + instructionName.toUpperCase();
+                } else {
+                    errorDiv.innerText = ''; // Clear error message if valid
+                }
+            });
+        }
+    });
+});
+
+function validateInput(instructionName, value) {
+    let isValid = false;
+    switch (instructionName) {
+      case 'RUN':
+          isValid = validateRun(value);
+          break;
+      case 'CMD':
+          isValid = validateCmd(value);
+          break;
+      case 'LABEL':
+          isValid = validateLabel(value);
+          break;
+      case 'MAINTAINER':
+          isValid = validateMaintainer(value); // Note: 'MAINTAINER' is deprecated in favor of 'LABEL'
+          break;
+      case 'EXPOSE':
+          isValid = validateExpose(value);
+          break;
+      case 'ENV':
+          isValid = validateEnv(value);
+          break;
+      case 'ADD':
+          isValid = validateAdd(value);
+          break;
+      case 'COPY':
+          isValid = validateCopy(value);
+          break;
+      case 'ENTRYPOINT':
+          isValid = validateEntrypoint(value);
+          break;
+      case 'VOLUME':
+          isValid = validateVolume(value);
+          break;
+      case 'USER':
+          isValid = validateUser(value);
+          break;
+      case 'WORKDIR':
+          isValid = validateWorkdir(value);
+          break;
+      case 'ARG':
+          isValid = validateArg(value);
+          break;
+      case 'ONBUILD':
+          isValid = validateOnbuild(value);
+          break;
+      case 'STOPSIGNAL':
+          isValid = validateStopsignal(value);
+          break;
+      case 'HEALTHCHECK':
+          isValid = validateHealthcheck(value);
+          break;
+      case 'SHELL':
+          isValid = validateShell(value);
+          break;
+      default:
+              isValid = true; // Default to true if no specific validation is needed
+              break;
+      }
+
+    
+
+    return isValid;
+}
+    
+</script>
+
+
+
+
 <script>
 function resetSearch() {
   
