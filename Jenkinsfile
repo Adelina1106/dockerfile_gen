@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Clone repository') {
             steps {
-                git branch: 'main',  // Specify the branch 'main' here
+                git branch: 'main',
                     credentialsId: 'docker',
                     url: 'git@github.com:Adelina1106/dockerfile_gen.git'
             }
@@ -22,10 +22,10 @@ pipeline {
                 . env/bin/activate
                 echo 'student' | sudo -S apt-get update
                 echo 'student' | sudo -S apt-get install -y libmysqlclient-dev
-                # Replace <your_sudo_password> with the actual password (not recommended for production use)
                 
                 pip install --upgrade pip
                 pip install -r requirements.txt
+                pip install gunicorn
                 """
             }
         }
@@ -40,22 +40,38 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Activate your virtual environment
-                    sh ". ${VIRTUAL_ENV}/bin/activate"
-                    
                     // Pull latest changes from Git
                     checkout([$class: 'GitSCM',
-                              branches: [[name: 'main']],  // Specify the branch here
+                              branches: [[name: 'main']],
                               doGenerateSubmoduleConfigurations: false,
                               extensions: [],
                               userRemoteConfigs: [[credentialsId: 'docker',
                                                   url: 'git@github.com:Adelina1106/dockerfile_gen.git']]])
 
                     // Install Python dependencies
-                    sh "pip install -r requirements.txt"
+                    sh """
+                    . ${VIRTUAL_ENV}/bin/activate
+                    pip install -r requirements.txt
+                    """
                     
-                    // Run Django application with Gunicorn
-                    sh "gunicorn --workers 3 --bind 0.0.0.0:8000 myproject.wsgi:application"
+                    // Run Django application with Gunicorn in the background
+                    sh """
+                    . ${VIRTUAL_ENV}/bin/activate
+                    gunicorn --workers 3 --bind 0.0.0.0:8000 core.wsgi:application &
+                    """
+                }
+                
+                // Optional: Wait for a specific amount of time (e.g., 5 minutes) to simulate user activity
+                script {
+                    sleep(time: 10, unit: 'MINUTES')
+                }
+
+                // Stop the Gunicorn process after the timeout
+                script {
+                    def gunicorn_pid = sh(script: "pgrep -f 'gunicorn'", returnStdout: true).trim()
+                    if (gunicorn_pid) {
+                        sh "kill -9 ${gunicorn_pid}"
+                    }
                 }
             }
         }
