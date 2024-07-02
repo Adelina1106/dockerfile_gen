@@ -27,7 +27,7 @@ pipeline {
                 pip install --upgrade pip
                 pip install -r requirements.txt
                 """
-                    }
+            }
         }
         stage('Run Tests') {
             steps {
@@ -37,7 +37,6 @@ pipeline {
                 """
             }
         }
-       
         stage('Deploy') {
             steps {
                 script {
@@ -55,8 +54,8 @@ pipeline {
                     // Install Python dependencies
                     sh "pip install -r requirements.txt"
                     
-                    // Run Django server
-                    sh "python3 manage.py runserver"
+                    // Run Django application with Gunicorn
+                    sh "gunicorn --workers 3 --bind 0.0.0.0:8000 myproject.wsgi:application"
                 }
             }
         }
