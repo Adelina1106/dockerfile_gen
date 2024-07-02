@@ -7,6 +7,7 @@
 /node_modules/
 build/
 env
+new_env
 /staticfiles/
 
 #src
@@ -15,3 +16,4 @@ env
 #.env
 node_modules
 venv/
+new_env/
