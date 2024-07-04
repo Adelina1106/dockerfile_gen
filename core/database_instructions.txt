@@ -129,3 +129,28 @@ To set a label corresponding to the MAINTAINER field, you could use: LABEL org.o
 example: MAINTAINER <name>
 
 options: -
+
+
+ONBUILD:
+explanation: The ONBUILD instruction adds a trigger instruction to the image. This trigger executes later, when the image serves as a base for another build. The trigger runs within the downstream build's context, as though it were placed immediately after the FROM instruction in the downstream Dockerfile. This feature is beneficial when creating images intended as bases for other images, such as application build environments or daemons that can be customized with user-specific configurations.
+
+example: ONBUILD ADD . /app/src, ONBUILD RUN /usr/local/bin/python-build --dir /app/src
+
+options: -
+
+
+RUN:
+explanation: The RUN instruction executes commands to create a new layer atop the current image. This layer is then utilized in the subsequent step of the Dockerfile. The shell form is predominantly used, allowing longer instructions to be broken into multiple lines using either newline escapes or heredocs.
+
+example: RUN [OPTIONS] <command> ...(shell form), RUN [OPTIONS] [ "<command>", ... ] (exec form), RUN <<EOF
+apt-get update
+apt-get install -y curl
+EOF
+
+options:The available [OPTIONS] for the RUN instruction are:
+--mount
+--network
+--security
+
+SHELL:
+

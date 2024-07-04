@@ -2,7 +2,13 @@
       
         
       
-        Write, modify and test your own dockerfile!
+        FROM pypy:latest
+
+CMD ["ls", "-l"]
+
+ENV key=value
+
+
       
     
       

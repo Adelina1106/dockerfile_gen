@@ -19,6 +19,12 @@ const allowedExecutables = [
     "apt-install", "apt-remove", "apt-update", "apt-upgrade", "apt-search", "apt-show",
     "apt-list", "apt-add-repository", "apt-repository", "apt-mark", "apt-cache", "apt-file",
     'sudo', 'su', 'chroot', 'passwd', 'useradd', 'userdel', 'usermod', 'groupadd',
+    'groupdel', 'groupmod', 'chown', 'chgrp', 'chmod', 'passwd', 'mkpasswd', 'mkgroup',
+    'mkhomedir_helper', 'login', 'logout', 'exit', 'shutdown', 'reboot', 'halt', 'poweroff',
+    'init', 'runlevel', 'telinit', 'systemd', 'systemctl', 'service', 'chkconfig',
+    'journalctl', 'ps', 'top', 'htop', 'iotop', 'atop', 'uptime', 'w', 'who', 'last',
+    'finger', 'id', 'groups', 'users', 'w', 'who', 'last', 'finger', 'id', 'groups',
+    'users', 'w', 'who', 'last', 'finger', 'id', 'groups', 'users', 'w', 'who', 'last',
 ];
 
 function removeFirstAndLastChar(str) {
@@ -96,6 +102,11 @@ function validateAdd(value) {
 }
 
 function validateCopy(value) {
+
+    if(value.trim() === '' || value === null) {
+        return true;
+    }
+
     // Verificăm dacă valoarea conține exact două argumente separate prin spațiu
     const parts = value.trim().split(/\s+/);
     if (parts.length !== 2) {
@@ -191,7 +202,7 @@ function validateCmd(cmd) {
 
 
 
-function validateEntryPoint(value) {
+function validateEntrypoint(value) {
     // Verificăm dacă valoarea nu este goală și nu conține caractere de linie nouă
     return validateCmd(value);
 }

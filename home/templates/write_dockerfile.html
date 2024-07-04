@@ -427,7 +427,40 @@
   transition: box-shadow 0.3s ease; /* Smooth transition for focus effect */
 }
 
-
+.styled-button {
+            position: relative;
+            cursor: pointer;
+        }
+        .styled-button .tooltip {
+            visibility: hidden;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Adjust this value to move the tooltip up or down */
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            width: 120px;
+        }
+        .styled-button .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .styled-button:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
 
 
   </style>
@@ -451,7 +484,8 @@
         {% for file in user_files %}
         <li>
           <img src="{% static 'assets/img/docker_logo.webp' %}" style="margin-top: 4px" alt="Add" class="add-icon">
-          <a href="{% url 'write_dockerfile_with_id' file.id_dockerfile %}">{{ file.purpose }}</a>
+          {% csrf_token %}
+          <a href="{% url 'write_dockerfile_with_id' file.id_dockerfile %}" class="file-link" data-file-type="dockerfile"  data-file-id={{file.id_dockerfile}}>{{ file.purpose }}</a>
           <form action="{% url 'delete_template_editor' file.id_dockerfile %}" method="POST" class="delete-form">
               {% csrf_token %}
               <input type="image" src="{% static 'assets/img/bin.png' %}" style="width: 22px; margin-top: -3px; margin-left: 13px" alt="Submit">
@@ -472,7 +506,8 @@
         {% for template in templates %}
         <li>
           <img src="{% static 'assets/img/docker_logo.webp' %}" style="margin-top: 4px" alt="Add" class="add-icon">
-          <a href="{% url 'write_dockerfile_with_id' template.id_template %}">{{ template.template_name }}</a>
+          {% csrf_token %}
+          <a href="{% url 'write_dockerfile_with_id' template.id_template %}" class="file-link" data-file-type="template" data-file-id={{template.id_template}}>{{ template.template_name }}</a>
       </li>
       {% endfor %}
   
@@ -500,13 +535,18 @@
         <br>
         <br>
         {% endif %}
-        <button type="submit" name="action" value="build" class="styled-button" onclick="setAction('build')">Build Dockerfile</button>
+        <button type="submit" name="action" value="build" class="styled-button" onclick="setAction('build')">
+          Build Dockerfile
+          <span class="tooltip">Save your Dockerfile before building it.</span>
+      </button>
         <button type="submit" name="action" value="check" class="styled-button" onclick="setAction('check')">Check Syntax</button>
         <button type="submit" name="action" value="save" class="styled-button" onclick="setAction('save')">Save</button>
         <button type="submit" id="push" name="action" value="push" class="styled-button" onclick="setAction('push')">Push to DockerHub</button>
         <button type="submit" id="convert-button">Convert to Docker Compose</button>
       </form>      
-      <div id="error-message" style="color: red;" lint-result="{{ lint_result.message }}"></div>
+      <div id="error-message" style="color: red; max-height: 200px; overflow-y: auto;" lint-result="{{ lint_result.message }}"></div>
+      <div id="warning-message" style="color: rgb(255, 255, 255); max-height: 25px; overflow-y: auto;" lint-result="{{ lint_result.message }}"></div>
+      <div id="correct-message" style="color: rgb(0, 176, 103); max-height: 25px; overflow-y: auto;" lint-result="{{ lint_result.message }}"></div>
     </div>
   </div>
 </div>
@@ -547,6 +587,48 @@
     <p id="login-success" style="color: green; display: none; text-align: center;"></p>
   </div>
 </div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+        $('.file-link').on('click', function(e) {
+            e.preventDefault();
+            var fileType = $(this).data('file-type');
+            var fileId = $(this).data('file-id');
+
+            // Create a form dynamically
+            var form = $('<form>', {
+                'action': '/write_dockerfile/' + fileId + '/',
+                'method': 'POST'
+            });
+
+            // Append the hidden fields to the form
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'fileType',
+                'value': fileType
+            }));
+
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'fileId',
+                'value': fileId
+            }));
+
+            form.append($('<input>', {
+                'type': 'hidden',
+                'name': 'csrfmiddlewaretoken',
+                'value': $('input[name=csrfmiddlewaretoken]').val()
+            }));
+
+            // Append the form to the body and submit it
+            $('body').append(form);
+            form.submit();
+        });
+    });
+</script>
 
 
 <script>
@@ -590,7 +672,7 @@ document.getElementById('download-button').addEventListener('click', function() 
     var url = URL.createObjectURL(blob);
     var link = document.createElement('a');
     link.href = url;
-    link.download = 'myfilename.txt';
+    link.download = 'docker-compose.txt';
     link.click();
 });
 
@@ -640,12 +722,36 @@ closeButton.addEventListener('click', function() {
           dataType: 'json',
           success: function (data) {
             $('#loading-image').hide();
-              // Update the error-message div with the lint result
-              if (data.error) {
-                  document.getElementById('error-message').innerText = data.error;
-              } else {
-                  document.getElementById('error-message').innerText = data.message;
+              if (action == 'check'){
+                console.log('HMMMMMMMMMM');
+                if (data.error || data.message) {
+                  if(data.error){
+                    document.getElementById('error-message').innerText = data.error;
+                  }
+                  else document.getElementById('error-message').innerText = data.message;
+
+                } else {
+                  console.log('AUUU');
+                  document.getElementById('warning-message').innerText = " ";
+                  document.getElementById('error-message').innerText = " ";
+                  document.getElementById('correct-message').innerText = "Correct Dockerfile";
+                }
               }
+              else {
+                document.getElementById('correct-message').innerText = " ";
+                // Update the error-message div with the lint result
+                if (data.error) {
+                    document.getElementById('error-message').innerText = data.error;
+                    if (data.warning) {
+                        document.getElementById('warning-message').innerText = data.warning;
+                    }
+                } else {
+                    document.getElementById('error-message').innerText = data.message;
+                    if (data.warning) {
+                        document.getElementById('warning-message').innerText = data.warning;
+                    }
+                }
+            }
             }
           });
 
@@ -690,7 +796,7 @@ closeButton.addEventListener('click', function() {
             // Update the error-message div with the lint result
             if (data.error) {
               // If there's an error, display the error message
-              $('#login-error').text('Invalid username or password').show();
+              $('#login-error').text(data.error).show();
             } else {
               // If there's no error, display the success message
               $('#login-success').text('Image pushed to Docker Hub').show();

@@ -1,3 +1,4 @@
+from tarfile import HeaderError
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.views import LoginView
@@ -6,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.http import JsonResponse
-from .utils import lint_dockerfile, search_docker_images, create_dockerfile
+from .utils import find_files_in_dockerfile, lint_dockerfile, search_docker_images, create_dockerfile
 from django.contrib.auth.decorators import login_required
 from .models import Dockerfile_explanations
 from .models import Dockerfiles, Dockerfile_instructions, Dockerfile_explanations, Dockerfile_templates
@@ -20,6 +21,8 @@ from .utils import build_dockerfile, parse_and_format_server_messages
 import requests, docker
 from docker.errors import APIError
 from django.contrib.auth import logout
+import string
+
 # Create your views here.
 
 def landing(request):
@@ -68,19 +71,21 @@ def signup_view(request):
         if password != password2:
             return render(request, 'my_signup.html', {'message': 'Passwords do not match.'})
 
+        special_characters = string.punctuation
+
         if len(password) < 8:
             return render(request, 'my_signup.html', {'message': 'password must be at least 8 characters long.'})
         if not any(char.isdigit() for char in password):
             return render(request, 'my_signup.html', {'message': 'password must contain at least one digit.'})
         if not any(char.isalpha() for char in password):
             return render(request, 'my_signup.html', {'message': 'password must contain at least one letter.'})
-        if not any(char.isSpecial() for char in password):
+        if not any(char in special_characters for char in password):
             return render(request, 'my_signup.html', {'message': 'password must contain at least one special character.'})
 
         if User.objects.filter(username=username).exists():
             return render(request, 'my_signup.html', {'message': 'username is already taken.'})
 
-        if username.contains(' '):
+        if ' ' in username:
             return render(request, 'my_signup.html', {'message': 'username must not contain spaces.'})
         
         if not email.endswith(('@yahoo.com', '@gmail.com', '@hotmail.com')):
@@ -89,13 +94,12 @@ def signup_view(request):
         if User.objects.filter(email=email).exists():
             return render(request, 'my_signup.html', {'message': 'email address is already registered.'})
         
-        if not first_name.replace(' ', '').isalpha():
-            return render(request, 'my_signup.html', {'message': 'first name must contain only letters.'})
+        # if not first_name.replace(' ', '').isalpha():
+        #     return render(request, 'my_signup.html', {'message': 'first name must contain only letters.'})
         
-        if not last_name.replace(' ', '').isalpha():
-            return render(request, 'my_signup.html', {'message': 'last name must contain only letters.'})
+        # if not last_name.replace(' ', '').isalpha():
+        #     return render(request, 'my_signup.html', {'message': 'last name must contain only letters.'})
         
-        print("here")
         #user = User.objects.create_user(username, password, email, first_name=first_name, last_name=last_name)
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name, last_name=last_name)
         user.save()
@@ -171,20 +175,17 @@ def home(request):
 # )
             
             formatted_template = create_dockerfile(request)
-            print(request.POST.get('ADD'))
             
             # formatted_template = formatted_template.replace('\n', '<br>')
             # Create a new Dockerfiles and save it to the database
             Dockerfiles.objects.create(user=request.user,purpose = selected_image, text=formatted_template, name=selected_image)
         elif action == 'search':
             images = search_docker_images(purpose)
-            print(purpose)
             instructions = Dockerfile_instructions.objects.all()
             for instruction in instructions:
                 explanation = Dockerfile_explanations.objects.get(instruction=instruction.id_instruction)
                 instruction.summary_explanation = explanation.summary_explanation
                 instruction.example = explanation.examples.split(', ')[0]
-                print(instruction.example)
             return render(request, 'home.html', {'images': images, 'instructions': instructions})
         else:
             instructions = Dockerfile_instructions.objects.all()
@@ -192,14 +193,12 @@ def home(request):
                 explanation = Dockerfile_explanations.objects.get(instruction=instruction.id_instruction)
                 instruction.summary_explanation = explanation.summary_explanation
                 instruction.example = explanation.examples.split(', ')[0]
-                print(instruction.example)
             return render(request, 'home.html', {'instructions': instructions})
     instructions = Dockerfile_instructions.objects.all()
     for instruction in instructions:
         explanation = Dockerfile_explanations.objects.get(instruction=instruction.id_instruction)
         instruction.summary_explanation = explanation.summary_explanation
         instruction.example = explanation.examples.split(', ')[0]
-        print(instruction.example)
     return render(request, 'home.html', {'instructions': instructions})
     
 
@@ -245,37 +244,41 @@ def modify_dockerfile(request, file_id=None):
     user_files = Dockerfiles.objects.filter(user=request.user)
     selected_file = None
     templates = Dockerfile_templates.objects.all()
-    print(templates)
 
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'save':
-            print('Save action')
             updated_content = request.POST.get('file-content')
             if file_id:
                 # If a file is selected, update the existing file
-                selected_file = Dockerfiles.objects.get(id=file_id)
-                selected_file.text = updated_content
-                selected_file.save()
-                print('File updated')
+                if Dockerfiles.objects.filter(id_dockerfile=file_id).exists():
+                    selected_file = Dockerfiles.objects.get(id_dockerfile=file_id)
+                    selected_file.text = updated_content
+                    selected_file.save()
+                else :
+                    selected_file = Dockerfile_templates.objects.get(id_template=file_id)
+                    Dockerfiles.objects.create(user=request.user, text=selected_file.text, name=selected_file.template_name, purpose=selected_file.template_purpose)
+                    selected_file.text = updated_content
+                    selected_file.save()
             else:
             # If no file is selected, create a new file
-                print('File created')
                 selected_file = Dockerfiles.objects.create(user=request.user, text=updated_content)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'message': 'Dockerfile saved'})
             return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
         elif action == 'build':
             # Get the updated content from the form
-            print('Build action')
             updated_content = request.POST.get('file-content')
             build_result = build_dockerfile(updated_content)
             formatted_messages = parse_and_format_server_messages(build_result.get('message', ''))
             error_message = parse_and_format_server_messages(build_result.get('error', ''))
-            # print(build_result.get('message', ''), build_result.get('error', ''))
-            # print(formatted_messages)
+            temp_file_path = os.path.join(settings.BASE_DIR, 'home/', 'Dockerfile')
+            file_patterns = find_files_in_dockerfile(temp_file_path)
+            Warning_message = ''
+            if file_patterns:
+                Warning_message = 'Warning: Make sure you have these files on your system ' + ', '.join(file_patterns)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'message': formatted_messages, 'error': error_message})
+                return JsonResponse({'message': formatted_messages, 'error': error_message, 'warning': Warning_message})
             # if build_result:
             #     print("here")
             #     raw_messages = build_result.get('error', '')
@@ -290,6 +293,7 @@ def modify_dockerfile(request, file_id=None):
         elif action == 'check':
             updated_content = request.POST.get('file-content')
             lint_result = lint_dockerfile(updated_content)
+            print(lint_result)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse(lint_result)
             if lint_result:
@@ -299,17 +303,14 @@ def modify_dockerfile(request, file_id=None):
         elif action == 'template':
             updated_content = request.POST.get('file-content')
             template_name= request.POST.get('template_name')
-            print(template_name)
             template_purpose = request.POST.get('template_purpose')
             if file_id:
                 # If a file is selected, update the existing file
-                selected_file = Dockerfile_templates.objects.get(id=file_id)
+                selected_file = Dockerfile_templates.objects.get(id_template=file_id)
                 selected_file.text = updated_content
                 selected_file.save()
-                print('Template updated')
             else:
             # If no file is selected, create a new file
-                print('File created')
                 selected_file = Dockerfile_templates.objects.create(template_name=template_name,text=updated_content, template_purpose=template_purpose)
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'message': 'Dockerfile saved'})
@@ -326,7 +327,7 @@ def modify_dockerfile(request, file_id=None):
 
             # Construiește imaginea Docker folosind Dockerfile-ul din calea specificată
             image, build_logs = client.images.build(path=dockerfile_path, tag=docker_image_name)
-
+            print("Ce se intampla aici")
             # Autentifică-te pe DockerHub (înlocuiește 'username' și 'password' cu credențialele tale reale)
             client.login(username='username', password='password')
 
@@ -337,17 +338,29 @@ def modify_dockerfile(request, file_id=None):
 
             return render(request, 'dockerfile_push_success.html')
 
+    if request.method == 'POST':
+        file_type = request.POST.get('fileType')
+        file_id = request.POST.get('fileId')
 
-    if file_id:
-        if Dockerfiles.objects.filter(id_dockerfile=file_id).exists():
-            selected_file = Dockerfiles.objects.get(id_dockerfile=file_id)
-        else :
-            Dockerfiles.objects.create(user=request.user, text=Dockerfile_templates.objects.get(id_dockerfile=file_id).text, id_dockerfile=file_id, purpose=Dockerfile_templates.objects.get(id_dockerfile=file_id).template_name)
-        selected_file = Dockerfiles.objects.get(id_dockerfile=file_id)
-    # templates
-    else:
-        selected_file = None
+        user_files = Dockerfiles.objects.filter(user=request.user)
+        templates = Dockerfile_templates.objects.all()
 
+        if file_type == 'dockerfile':
+            selected_file = Dockerfiles.objects.filter(id_dockerfile=file_id).first()
+        elif file_type == 'template':
+            selected_file = Dockerfile_templates.objects.filter(id_template=file_id).first()
+            # Dockerfiles.objects.create(user=request.user, text=selected_file.text, name=selected_file.template_name, purpose=selected_file.template_purpose)
+        else:
+            selected_file = None
+
+        return render(request, 'write_dockerfile.html', {
+            'user_files': user_files,
+            'selected_file': selected_file,
+            'templates': templates
+        })
+    # else:
+    #     # Handle non-ajax or invalid method requests
+    #     return JsonResponse({'error': 'Invalid request'})
 
     return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
 
@@ -380,7 +393,6 @@ def open_file(request, file_id):
 def dockerfile_push(request):
     if request.method == 'POST':
         dockerfile_content = request.POST.get('file-content')
-        print(dockerfile_content)
 
         temp_file_path = os.path.join(settings.BASE_DIR, 'home/', 'Dockerfile')
         directory_file_path = os.path.join(settings.BASE_DIR, 'home/')
@@ -389,7 +401,6 @@ def dockerfile_push(request):
             file.write(dockerfile_content)
         username = request.POST.get('docker_username')
         password = request.POST.get('docker_password')
-        print(username, password)
               
         try:
             client = docker.from_env()
@@ -398,21 +409,26 @@ def dockerfile_push(request):
             # Build and push the Docker image...
             # You'll need to replace 'path/to/dockerfile' and 'myusername/myimage' with your actual values
             image, build_logs = client.images.build(path=directory_file_path, tag=f'{username}/myimage', rm=True)
-            print("build_logs")
             push_logs = client.images.push(f'{username}/myimage', stream=True)
             print("push_logs")
             for line in push_logs:
                 print(line)
-            print("success")
             return JsonResponse({'status': 'success'})  # Return a JSON response for success
         except APIError:
             print("failure")
+            json.dumps(str(APIError))  # Convert to string to ensure it's serializable
+            error_message = str(APIError)
+            if (error_message.__contains__('APIError')):
+                return JsonResponse({'status': 'failure', 'error': "Invalid username or password"})
             print(APIError)
-            return JsonResponse({'status': 'failure', 'error': 'Invalid username or password'})  # Return a JSON response for failure
+            if APIError:
+                return JsonResponse({'status': 'failure', 'error': error_message})
+            return JsonResponse({'status': 'failure', 'error': "Invalid username or password"})  # Return a JSON response for failure
         except Exception as e:
             print("failure")
             print(str(e))
-            return JsonResponse({'status': 'failure', 'error': str(e)})       
+            return JsonResponse({'status': 'failure', 'error': str(e)})     
+
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_protect
@@ -427,7 +443,7 @@ def docker_login(request):
                 client.login(username, password)
                 return JsonResponse({'status': 'success'})
             except docker.errors.APIError:
-                return JsonResponse({'status': 'failure', 'error': 'Invalid username or password'})
+                return JsonResponse({'status': 'failure', 'error': APIError})
 
         else:
             return JsonResponse({'status': 'failure', 'error': 'Username and password are required'})
@@ -459,11 +475,8 @@ import json
 @login_required
 def docker_compose(request):
     if request.method == 'POST':
-        print("am ajuns")
         dockerfiles = json.loads(request.POST.get('dockerfiles'))
-        print(dockerfiles)
         docker_compose_content = convert_to_docker_compose(dockerfiles)
-        print(docker_compose_content)
 
         return JsonResponse({'docker_compose_content': docker_compose_content})
 
@@ -510,7 +523,6 @@ def password_reset_request(request):
         if password_reset_form.is_valid():
             data = password_reset_form.cleaned_data['email']
             # associated_users = User.objects.filter(email=data)
-            print(request.POST.get('email'))
             # if associated_users.exists():
                     # for user in associated_users:
             subject = "Password Reset Requested"
@@ -526,9 +538,8 @@ def password_reset_request(request):
             }
             email_content = render_to_string(email_template_name, c)
             try:
-                print(request.POST.get('email'))
                 send_mail(subject, email_content, settings.DEFAULT_FROM_EMAIL, [email], fail_silently=False)
-            except BadHeaderError:
+            except HeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect("password_reset_done_custom")
     # password_reset_form = PasswordResetForm()

@@ -1,3 +1,5 @@
+from io import BytesIO
+import tarfile
 import requests, docker
 from .models import Dockerfiles, Dockerfile_instructions
 import os, re
@@ -136,9 +138,80 @@ def lint_dockerfile(dockerfile_content):
     except subprocess.CalledProcessError as e:
         return {'error': e.stderr}
 
+def find_files_in_dockerfile(dockerfile_path):
+    file_patterns = []
+    with open(dockerfile_path, 'r') as dockerfile:
+        lines = dockerfile.readlines()
+        for line in lines:
+            add_match = re.match(r'^\s*(ADD|COPY)\s+((?:["\'].*?["\']|\S+))\s+((?:["\'].*?["\']|\S+))\s*', line)
+            if add_match:
+                file_pattern1 = add_match.group(2).strip('"\'')
+                file_pattern2 = add_match.group(3).strip('"\'')
+                # Ignore files that start with '--from'
+                if not file_pattern1.startswith('--from'):
+                    file_patterns.append(file_pattern1)
+                if not file_pattern2.startswith('--from'):
+                    file_patterns.append(file_pattern2)
+    return file_patterns
+
+def create_files(file_paths):
+    for path in file_paths:
+        if path.startswith('/'):
+            path = path[1:]
+        absolute_path = os.path.join(settings.BASE_DIR, 'home/', path)
+        
+        # Check if the directory exists, create if necessary
+        if os.path.isdir(absolute_path):
+            print(f"Directory already exists: {absolute_path}")
+        else:
+            try:
+                os.makedirs(os.path.dirname(absolute_path), exist_ok=True)
+                print(f"Created directory: {os.path.dirname(absolute_path)}")
+            except OSError as e:
+                print(f"Error creating directory {os.path.dirname(absolute_path)}: {e}")
+
+        # Create the file if it doesn't exist
+        if not os.path.exists(absolute_path):
+            try:
+                with open(absolute_path, 'w') as f:
+                    f.write("This file was created by the script.")
+                    print(f"Created file: {absolute_path}")
+            except IOError as e:
+                print(f"Error creating file {absolute_path}: {e}")
+        else:
+            print(f"File already exists: {absolute_path}")
+
+
+def delete_files(file_paths):
+    for path in file_paths:
+        if path.startswith('/'):
+            path = path[1:]
+        absolute_path = os.path.join(settings.BASE_DIR, 'home/', path)
+        
+        # Check if the path is a directory and exists
+        if os.path.isdir(absolute_path) and os.path.exists(absolute_path):
+            try:
+                os.rmdir(absolute_path)
+                print(f"Deleted directory: {absolute_path}")
+            except OSError as e:
+                print(f"Error deleting directory {absolute_path}: {e}")
+        else:
+            # Check if the path is a file and exists
+            if os.path.isfile(absolute_path) and os.path.exists(absolute_path):
+                try:
+                    os.remove(absolute_path)
+                    print(f"Deleted file: {absolute_path}")
+                except OSError as e:
+                    print(f"Error deleting file {absolute_path}: {e}")
+            else:
+                print(f"File or directory not found: {absolute_path}")
+
+
 def build_dockerfile(dockerfile_content):
     client = docker.from_env()
     temp_file_path = os.path.join(settings.BASE_DIR, 'home/', 'Dockerfile')
+    file_patterns = find_files_in_dockerfile(temp_file_path)
+    create_files(file_patterns)
     directory_file_path = os.path.join(settings.BASE_DIR, 'home/')
     
     with open(temp_file_path, 'w') as file:
@@ -152,6 +225,7 @@ def build_dockerfile(dockerfile_content):
         # Convert build logs to string
         build_output = '\n'.join([log.get('stream', '') for log in build_logs])
         
+        delete_files(file_patterns)
         return {'message': build_output.strip()}  # Return the build output as a string
     except docker.errors.BuildError as e:
         # If the build fails, capture the error message from the logs
@@ -164,11 +238,13 @@ def build_dockerfile(dockerfile_content):
             else:
                 error_message += str(log)
         
+        delete_files(file_patterns)
         return {'error': error_message.strip()}  # Return the error message as a string except docker.errors.BuildError as e:
         # If the build fails, capture the error message from the logs
         error_message = e.build_log
         return {'message': str(e.build_log)}
     except Exception as e:
+        delete_files(file_patterns)
         return {'message': str(e)}
     
     import json
@@ -178,29 +254,48 @@ import json
 
 def parse_and_format_server_messages(text):
     # Definim un pattern pentru a identifica conținutul mesajului
+    # Remove ANSI escape sequences
+    ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+    text = ansi_escape.sub('', text)
+
+    # Define patterns to identify content of the message
     pattern_stream = r'\{\'stream\': \'(.*?)\'\}'
     pattern_status = r'\{\'status\': \'(.*?)\',(?:.*?)\}'
     pattern_depr = r'\[DEPRECATION NOTICE\]\': \'(.*?)\'\}'
     pattern_message = r'\{\'message\': \'(.*?)\'\}'
     
-    # Folosim re.findall pentru a găsi toate potrivirile cu pattern-urile în text
+    # Find all matches with the patterns in text
     matches_stream = re.findall(pattern_stream, text)
     matches_status = re.findall(pattern_status, text)
     matches_depr = re.findall(pattern_depr, text)
     matches_message = re.findall(pattern_message, text)
     
-    # Concatenăm mesajele pentru ambele chei
+    # Concatenate messages for all keys
     stream_messages = '\n'.join(matches_stream)
     status_messages = '\n'.join(matches_status)
     depr_messages = '\n'.join(matches_depr)
     message_messages = '\n'.join(matches_message)
+    
+    # # Debug prints
+    # print("Stream Messages:", stream_messages)
+    # print("Status Messages:", status_messages)
+    # print("Deprecation Messages:", depr_messages)
+    # print("Message Messages:", message_messages)
 
-    # Înlocuim mesajele originale din text cu cele extrase
-    text = re.sub(pattern_stream, stream_messages, text)
-    text = re.sub(pattern_status, status_messages, text)
-    text = re.sub(pattern_depr, depr_messages, text)
-    text = re.sub(pattern_message, message_messages, text)
+    # Replace original messages in text with the extracted ones
+    text = re.sub(pattern_stream, re.escape(stream_messages), text)
+    text = re.sub(pattern_status, re.escape(status_messages), text)
+    text = re.sub(pattern_depr, re.escape(depr_messages), text)
+    text = re.sub(pattern_message, re.escape(message_messages), text)
 
-    # Returnăm textul modificat
+    text = re.sub(r'\\(.)', r'\1', text)
+    text = re.sub(r'\x1b\[.*?m', '', text)
+    text = re.sub(r'\\n', '\n', text)
+    text = re.sub(r'\\', '', text)
+
+    # Handle escape sequences
+    text = text.encode('unicode_escape').decode('unicode_escape')
+
+    # Return modified text
     return text
 
