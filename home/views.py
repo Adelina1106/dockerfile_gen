@@ -262,7 +262,7 @@ def modify_dockerfile(request, file_id=None):
                     selected_file.save()
             else:
             # If no file is selected, create a new file
-                selected_file = Dockerfiles.objects.create(user=request.user, text=updated_content)
+                selected_file = Dockerfiles.objects.create(user=request.user, text=updated_content, purpose='Custom Dockerfile' + str(Dockerfiles.objects.filter(user=request.user).count()))
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'message': 'Dockerfile saved'})
             return render(request, 'write_dockerfile.html', {'user_files': user_files, 'selected_file': selected_file, 'templates': templates})
